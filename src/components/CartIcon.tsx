@@ -38,8 +38,8 @@ const CartIcon = () => {
                   <div className="absolute top-2 right-2">
                     <button
                       onClick={() => {
-                        closeCart(); // update store
-                        close(); // close Headless UI popover
+                        closeCart();
+                        close();
                       }}
                       className="text-gray-400 hover:text-gray-600"
                     >
