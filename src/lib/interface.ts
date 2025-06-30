@@ -141,3 +141,34 @@ export interface ProductPageData {
     discountedPrice: number;
   }[];
 }
+
+export type CartItem = {
+  id: string;
+  slug?: string;
+  name: string;
+  price: number;
+  quantity: number;
+  image?: string;
+  variantId?: string;
+  size?: string;
+  color?: string;
+};
+
+export type Discount = {
+  id: string;
+  code: string;
+  type: string;
+  valueType: string;
+  discountValue: number;
+  discountAmount: number;
+  combineWithProductDiscounts?: boolean;
+  combineWithOrderDiscounts?: boolean;
+  combineWithShippingDiscounts?: boolean;
+};
+
+export type CartStore = {
+  items: Record<string, CartItem>;
+  totalItems: number;
+  totalAmount: number;
+  discount: Discount | null;
+};

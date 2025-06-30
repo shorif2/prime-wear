@@ -1,5 +1,5 @@
 ---
-import CartIcon from "./CartIcon";
+import CartFlyoutIcon from "../components/ui/CartFlyoutIcon";
 ---
 
 <header class="py-4 shadow-sm bg-white">
@@ -24,9 +24,11 @@ import CartIcon from "./CartIcon";
         >Search</button
       >
     </div>
-
-    <div class="flex justify-end items-end space-x-4">
-      <CartIcon client:load />
-    </div>
+    <CartFlyoutIcon client:load />
+    <!-- <button id="cartButton" class="flex justify-end items-center space-x-4">
+      <i class="fa-solid fa-bag-shopping text-xl"></i>
+      <span id="cartCount" class="ml-1 text-sm font-medium">0</span>
+      <span class="sr-only">items in cart, view bag</span>
+    </button> -->
   </div>
 </header>
