@@ -4,7 +4,7 @@ import { $ as $$Breadcrumb } from '../../chunks/Breadcrumb_Y53Emyab.mjs';
 import { jsx } from 'react/jsx-runtime';
 import { c as cn, $ as $$ProductCard, g as getProductBySlug } from '../../chunks/dataFetching_D5g0dRSW.mjs';
 /* empty css                                     */
-import { $ as $$Layout } from '../../chunks/Layout_C2FacQK5.mjs';
+import { $ as $$Layout } from '../../chunks/Layout_D_x2xxGj.mjs';
 export { renderers } from '../../renderers.mjs';
 
 function RichContent({

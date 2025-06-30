@@ -2,7 +2,7 @@ import { c as createComponent, m as maybeRenderHead, r as renderTemplate, a as r
 import 'kleur/colors';
 import { $ as $$Breadcrumb } from '../chunks/Breadcrumb_Y53Emyab.mjs';
 import 'clsx';
-import { $ as $$Layout } from '../chunks/Layout_C2FacQK5.mjs';
+import { $ as $$Layout } from '../chunks/Layout_D_x2xxGj.mjs';
 export { renderers } from '../renderers.mjs';
 
 const $$Products = createComponent(($$result, $$props, $$slots) => {
