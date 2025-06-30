@@ -1,7 +1,6 @@
-import { Dialog, Menu, Popover, Tab, Transition } from "@headlessui/react";
+import { Popover, Transition } from "@headlessui/react";
 import React from "react";
-import { Fragment, useEffect, useState } from "react";
-import { clsx } from "clsx";
+
 import { useStore } from "@nanostores/react";
 import { isCartOpen, closeCart } from "../script/cartStore";
 
