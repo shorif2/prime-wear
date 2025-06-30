@@ -9,8 +9,16 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/node": "^9.2.2",
+    "@astrojs/react": "^4.3.0",
+    "@astrojs/vercel": "^8.2.0",
+    "@headlessui/react": "^2.2.4",
+    "@nanostores/react": "^1.0.0",
     "@tailwindcss/vite": "^4.1.11",
     "astro": "^5.10.1",
+    "clsx": "^2.1.1",
+    "nanostores": "^1.0.1",
+    "tailwind-merge": "^3.3.1",
     "tailwindcss": "^4.1.11"
   },
   "devDependencies": {

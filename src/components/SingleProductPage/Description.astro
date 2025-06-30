@@ -1,0 +1,17 @@
+---
+const { description } = Astro.props;
+import { RichContent } from "../../components/ui/RichContent";
+---
+
+<div class="container pb-16">
+  <h3
+    class="border-b border-gray-200 font-roboto text-gray-800 pb-3 font-medium"
+  >
+    Product details
+  </h3>
+  <div class="w-3/5 pt-6">
+    <div class="text-gray-600">
+      {description && <RichContent content={description} />}
+    </div>
+  </div>
+</div>
