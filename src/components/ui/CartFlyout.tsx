@@ -6,8 +6,6 @@ import { cartItems, isCartOpen } from "../../store/cart";
 export default function CartFlyout() {
   const $isCartOpen = useStore(isCartOpen);
   const $cartItems = useStore(cartItems);
-
-  console.log($cartItems);
   return (
     <>
       {$isCartOpen && (
