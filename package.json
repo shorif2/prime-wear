@@ -12,7 +12,7 @@
     "@astrojs/node": "^9.2.2",
     "@astrojs/react": "^4.3.0",
     "@astrojs/tailwind": "^6.0.2",
-    "@astrojs/vercel": "^8.2.0",
+    "@astrojs/vercel": "^8.2.1",
     "@headlessui/react": "^2.2.4",
     "@nanostores/react": "^1.0.0",
     "@tailwindcss/vite": "^4.1.11",
