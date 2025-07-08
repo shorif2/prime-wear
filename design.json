@@ -1,0 +1,243 @@
+{
+  "designSystem": {
+    "name": "JASON Profile - E-commerce Interface",
+    "version": "1.0.0",
+    "description": "Design system extracted from shopping cart interface patterns",
+
+    "colorPalette": {
+      "primary": {
+        "background": "#FFFFFF",
+        "surface": "#F8F9FA",
+        "text": "#1A1A1A",
+        "textSecondary": "#6B7280",
+        "accent": "#000000"
+      },
+      "interactive": {
+        "buttonPrimary": "#000000",
+        "buttonPrimaryText": "#FFFFFF",
+        "buttonSecondary": "#F3F4F6",
+        "buttonSecondaryText": "#374151",
+        "link": "#6366F1",
+        "linkHover": "#4F46E5"
+      },
+      "feedback": {
+        "success": "#10B981",
+        "warning": "#F59E0B",
+        "error": "#EF4444",
+        "info": "#3B82F6"
+      }
+    },
+
+    "typography": {
+      "fontFamily": {
+        "primary": "system-ui, -apple-system, sans-serif",
+        "fallback": "Arial, Helvetica, sans-serif"
+      },
+      "fontSizes": {
+        "xs": "0.75rem",
+        "sm": "0.875rem",
+        "base": "1rem",
+        "lg": "1.125rem",
+        "xl": "1.25rem",
+        "2xl": "1.5rem",
+        "3xl": "1.875rem"
+      },
+      "fontWeights": {
+        "normal": 400,
+        "medium": 500,
+        "semibold": 600,
+        "bold": 700
+      },
+      "lineHeights": {
+        "tight": 1.25,
+        "normal": 1.5,
+        "relaxed": 1.75
+      }
+    },
+
+    "spacing": {
+      "scale": "0.25rem",
+      "sizes": {
+        "xs": "0.5rem",
+        "sm": "0.75rem",
+        "md": "1rem",
+        "lg": "1.5rem",
+        "xl": "2rem",
+        "2xl": "3rem",
+        "3xl": "4rem"
+      }
+    },
+
+    "layout": {
+      "maxWidth": "1200px",
+      "containerPadding": "1rem",
+      "gridGap": "1rem",
+      "sectionSpacing": "2rem"
+    },
+
+    "components": {
+      "card": {
+        "structure": "container with subtle shadow and rounded corners",
+        "padding": "1.5rem",
+        "borderRadius": "0.5rem",
+        "backgroundColor": "#FFFFFF",
+        "border": "1px solid #E5E7EB",
+        "shadow": "0 1px 3px rgba(0, 0, 0, 0.1)"
+      },
+
+      "header": {
+        "structure": "title with optional secondary action",
+        "titleFontSize": "1.5rem",
+        "titleFontWeight": 600,
+        "titleColor": "#1A1A1A",
+        "alignment": "space-between",
+        "padding": "1rem 0"
+      },
+
+      "productItem": {
+        "structure": "horizontal layout with image, details, and controls",
+        "imageSize": "80px x 80px",
+        "imageRadius": "0.375rem",
+        "contentSpacing": "1rem",
+        "priceAlignment": "right",
+        "quantityControls": "inline with minus/plus buttons"
+      },
+
+      "quantitySelector": {
+        "structure": "horizontal button group with input",
+        "buttonSize": "2rem x 2rem",
+        "buttonStyle": "minimal with border",
+        "inputWidth": "3rem",
+        "inputAlignment": "center"
+      },
+
+      "button": {
+        "primary": {
+          "backgroundColor": "#000000",
+          "color": "#FFFFFF",
+          "padding": "0.75rem 1.5rem",
+          "borderRadius": "0.375rem",
+          "fontWeight": 500,
+          "fontSize": "0.875rem"
+        },
+        "secondary": {
+          "backgroundColor": "#F3F4F6",
+          "color": "#374151",
+          "padding": "0.5rem 1rem",
+          "borderRadius": "0.375rem",
+          "fontWeight": 500,
+          "fontSize": "0.875rem"
+        },
+        "icon": {
+          "size": "2rem x 2rem",
+          "backgroundColor": "transparent",
+          "border": "1px solid #D1D5DB",
+          "borderRadius": "0.375rem"
+        }
+      },
+
+      "input": {
+        "structure": "text input with placeholder and optional icon",
+        "padding": "0.75rem 1rem",
+        "borderRadius": "0.375rem",
+        "border": "1px solid #D1D5DB",
+        "backgroundColor": "#FFFFFF",
+        "fontSize": "0.875rem",
+        "focusOutline": "2px solid #6366F1"
+      },
+
+      "priceDisplay": {
+        "structure": "right-aligned monetary values",
+        "primarySize": "1.25rem",
+        "primaryWeight": 600,
+        "secondarySize": "0.875rem",
+        "secondaryWeight": 400,
+        "secondaryColor": "#6B7280"
+      },
+
+      "summary": {
+        "structure": "itemized list with totals",
+        "itemSpacing": "0.75rem",
+        "separatorStyle": "1px solid #E5E7EB",
+        "totalEmphasis": "bold with larger font",
+        "alignment": "space-between"
+      }
+    },
+
+    "patterns": {
+      "listItems": {
+        "structure": "vertical stack with consistent spacing",
+        "itemPadding": "1rem 0",
+        "separator": "subtle border or spacing",
+        "hoverState": "slight background change"
+      },
+
+      "formSections": {
+        "structure": "grouped inputs with labels",
+        "labelPosition": "above input",
+        "spacing": "1rem between fields",
+        "validation": "inline error messages"
+      },
+
+      "actionGroups": {
+        "structure": "horizontal button arrangement",
+        "spacing": "0.75rem between buttons",
+        "alignment": "right or center",
+        "hierarchy": "primary action emphasized"
+      }
+    },
+
+    "interactions": {
+      "hover": {
+        "buttons": "slight opacity change (0.9)",
+        "cards": "subtle shadow increase",
+        "links": "color change to hover state"
+      },
+      "focus": {
+        "outline": "2px solid focus color",
+        "offset": "2px"
+      },
+      "active": {
+        "buttons": "slight scale down (0.95)",
+        "clickable": "brief opacity change"
+      }
+    },
+
+    "responsive": {
+      "breakpoints": {
+        "sm": "640px",
+        "md": "768px",
+        "lg": "1024px",
+        "xl": "1280px"
+      },
+      "behavior": {
+        "mobile": "single column layout, larger touch targets",
+        "tablet": "two column where appropriate",
+        "desktop": "full multi-column layout"
+      }
+    },
+
+    "accessibility": {
+      "colorContrast": "WCAG AA compliant",
+      "focusIndicators": "clearly visible",
+      "touchTargets": "minimum 44px",
+      "semanticMarkup": "proper heading hierarchy and landmarks"
+    },
+
+    "designPrinciples": {
+      "clarity": "Clean, minimal interface with clear information hierarchy",
+      "consistency": "Uniform spacing, typography, and component patterns",
+      "efficiency": "Streamlined interactions with minimal cognitive load",
+      "accessibility": "Inclusive design for all users",
+      "scalability": "Flexible system that adapts to different content types"
+    },
+
+    "implementationNotes": {
+      "framework": "Compatible with React, Vue, Angular, or vanilla HTML/CSS",
+      "cssArchitecture": "Utility-first approach recommended (Tailwind CSS compatible)",
+      "componentLibrary": "Modular components with consistent props API",
+      "stateManagement": "Clear state patterns for interactive elements",
+      "testing": "Design system components should be thoroughly tested"
+    }
+  }
+}

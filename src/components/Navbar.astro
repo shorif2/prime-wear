@@ -1,3 +1,7 @@
+---
+import CartFlyoutIcon from "./ui/CartFlyoutIcon";
+---
+
 <nav class="bg-gray-800">
   <div class="container flex">
     <div
@@ -84,12 +88,9 @@
 
     <div class="flex items-center justify-between flex-grow md:pl-12 py-5">
       <div class="flex items-center space-x-6 capitalize">
-        <a href="/" class="text-gray-200 hover:text-white transition"
-          >Home</a
-        >
-        <a
-          href="/shop"
-          class="text-gray-200 hover:text-white transition">Shop</a
+        <a href="/" class="text-gray-200 hover:text-white transition">Home</a>
+        <a href="/shop" class="text-gray-200 hover:text-white transition"
+          >Shop</a
         >
         <a href="#" class="text-gray-200 hover:text-white transition"
           >About us</a
@@ -98,10 +99,12 @@
           >Contact us</a
         >
       </div>
-      <a
-        href="/login"
-        class="text-gray-200 hover:text-white transition">Login</a
-      >
+      <div class="flex items-center space-x-4">
+        <CartFlyoutIcon client:load />
+        <a href="/login" class="text-gray-200 hover:text-white transition"
+          >Login</a
+        >
+      </div>
     </div>
   </div>
 </nav>

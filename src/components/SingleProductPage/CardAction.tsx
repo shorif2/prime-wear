@@ -1,6 +1,17 @@
 import React, { useState } from "react";
-import { addCartItem } from "../../store/cart";
-const CardAction = () => {
+import { addCartItem, isCartOpen } from "../../store/cart";
+
+interface CardActionProps {
+  product?: {
+    id: string;
+    name: string;
+    price: number;
+    imageSrc?: string;
+    slug?: string;
+  };
+}
+
+const CardAction = ({ product }: CardActionProps) => {
   const [inputNumber, setInputNumber] = useState(1);
 
   // Function to increase quantity
@@ -14,13 +25,25 @@ const CardAction = () => {
   };
 
   // Optional: Handle manual input change
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = Math.max(1, parseInt(e.target.value) || 1);
     setInputNumber(value);
   };
 
-  const handleAddToCart = (number) => {
-    addCartItem(number);
+  const handleAddToCart = () => {
+    if (product) {
+      addCartItem({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        imageSrc: product.imageSrc || "/images/products/product1.jpg", // fallback image
+        slug: product.slug,
+        quantity: inputNumber,
+      });
+
+      // Open the cart after adding
+      isCartOpen.set(true);
+    }
   };
 
   return (
@@ -65,7 +88,7 @@ const CardAction = () => {
       {/* cart action */}
       <div className="mt-6 flex gap-3 border-b border-gray-200 pb-5 pt-5">
         <button
-          onClick={() => handleAddToCart(inputNumber)}
+          onClick={handleAddToCart}
           className="bg-primary border border-primary text-white px-8 py-2 font-medium rounded uppercase flex items-center gap-2 hover:bg-transparent hover:text-primary transition"
         >
           <i className="fa-solid fa-bag-shopping"></i> Add to cart

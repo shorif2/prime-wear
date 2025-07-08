@@ -13,7 +13,7 @@ const { name, price, metaDescription, discountedPrice } = product;
     <img src={images[0].url} alt="product" class="w-full" />
     <div class="grid grid-cols-5 gap-4 mt-4">
       {
-        images?.map((image) => (
+        images?.map((image: any) => (
           <Fragment key={image.id}>
             <img
               src={image.url}
@@ -68,7 +68,16 @@ const { name, price, metaDescription, discountedPrice } = product;
       necessitatibus adipisci magnam porro.
     </p>
 
-    <CardAction client:load />
+    <CardAction
+      product={{
+        id: product?.id,
+        name: product?.name,
+        price: product?.discountedPrice || product?.price,
+        imageSrc: images?.[0]?.url,
+        slug: product?.slug,
+      }}
+      client:load
+    />
     <!-- social icon -->
     <div class="flex gap-3 mt-4">
       <a

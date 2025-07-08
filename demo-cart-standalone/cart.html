@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shopping Cart - JASON Design System</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          system-ui,
+          -apple-system,
+          sans-serif;
+        background-color: #f8f9fa;
+        color: #1a1a1a;
+        line-height: 1.5;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 1rem;
+      }
+
+      /* Card Component */
+      .card {
+        background-color: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 0.5rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+      }
+
+      /* Header Component */
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 0;
+        border-bottom: 1px solid #e5e7eb;
+        margin-bottom: 1.5rem;
+      }
+
+      .header h1 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #1a1a1a;
+      }
+
+      .header .action-link {
+        color: #6366f1;
+        text-decoration: none;
+        font-size: 0.875rem;
+        transition: color 0.2s;
+      }
+
+      .header .action-link:hover {
+        color: #4f46e5;
+      }
+
+      /* Product Item Component */
+      .product-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem 0;
+        border-bottom: 1px solid #e5e7eb;
+      }
+
+      .product-item:last-child {
+        border-bottom: none;
+      }
+
+      .product-image {
+        width: 80px;
+        height: 80px;
+        background-color: #f3f4f6;
+        border-radius: 0.375rem;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #6b7280;
+        font-size: 0.75rem;
+      }
+
+      .product-details {
+        flex: 1;
+      }
+
+      .product-title {
+        font-size: 1rem;
+        font-weight: 500;
+        color: #1a1a1a;
+        margin-bottom: 0.25rem;
+      }
+
+      .product-variant {
+        font-size: 0.875rem;
+        color: #6b7280;
+        margin-bottom: 0.5rem;
+      }
+
+      .product-price {
+        font-size: 0.875rem;
+        color: #6b7280;
+      }
+
+      .product-controls {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      /* Quantity Selector Component */
+      .quantity-selector {
+        display: flex;
+        align-items: center;
+        gap: 0;
+      }
+
+      .quantity-button {
+        width: 2rem;
+        height: 2rem;
+        background-color: transparent;
+        border: 1px solid #d1d5db;
+        border-radius: 0.375rem;
+        font-size: 1rem;
+        color: #374151;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+      }
+
+      .quantity-button:hover {
+        background-color: #f3f4f6;
+      }
+
+      .quantity-button:active {
+        transform: scale(0.95);
+      }
+
+      .quantity-input {
+        width: 3rem;
+        height: 2rem;
+        text-align: center;
+        border: 1px solid #d1d5db;
+        border-left: none;
+        border-right: none;
+        font-size: 0.875rem;
+        background-color: #ffffff;
+      }
+
+      .quantity-input:focus {
+        outline: 2px solid #6366f1;
+        outline-offset: 2px;
+      }
+
+      .quantity-button.minus {
+        border-right: none;
+        border-radius: 0.375rem 0 0 0.375rem;
+      }
+
+      .quantity-button.plus {
+        border-left: none;
+        border-radius: 0 0.375rem 0.375rem 0;
+      }
+
+      /* Price Display Component */
+      .price-display {
+        text-align: right;
+      }
+
+      .price-primary {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #1a1a1a;
+      }
+
+      .price-secondary {
+        font-size: 0.875rem;
+        color: #6b7280;
+        font-weight: 400;
+      }
+
+      /* Remove Button */
+      .remove-button {
+        width: 2rem;
+        height: 2rem;
+        background-color: transparent;
+        border: 1px solid #d1d5db;
+        border-radius: 0.375rem;
+        color: #6b7280;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+      }
+
+      .remove-button:hover {
+        background-color: #fef2f2;
+        border-color: #fca5a5;
+        color: #ef4444;
+      }
+
+      /* Summary Component */
+      .summary {
+        margin-top: 2rem;
+      }
+
+      .summary-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.75rem 0;
+      }
+
+      .summary-item:not(:last-child) {
+        border-bottom: 1px solid #e5e7eb;
+      }
+
+      .summary-item.total {
+        font-weight: 600;
+        font-size: 1.125rem;
+        border-top: 2px solid #e5e7eb;
+        margin-top: 1rem;
+        padding-top: 1rem;
+      }
+
+      .summary-label {
+        color: #1a1a1a;
+      }
+
+      .summary-value {
+        color: #1a1a1a;
+        font-weight: 500;
+      }
+
+      /* Discount Code Input */
+      .discount-section {
+        margin-top: 1.5rem;
+      }
+
+      .discount-form {
+        display: flex;
+        gap: 0.5rem;
+      }
+
+      .discount-input {
+        flex: 1;
+        padding: 0.75rem 1rem;
+        border-radius: 0.375rem;
+        border: 1px solid #d1d5db;
+        background-color: #ffffff;
+        font-size: 0.875rem;
+      }
+
+      .discount-input:focus {
+        outline: 2px solid #6366f1;
+        outline-offset: 2px;
+      }
+
+      .discount-input::placeholder {
+        color: #6b7280;
+      }
+
+      /* Button Components */
+      .btn {
+        font-family: inherit;
+        font-weight: 500;
+        font-size: 0.875rem;
+        border-radius: 0.375rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+      }
+
+      .btn-primary {
+        background-color: #000000;
+        color: #ffffff;
+        padding: 0.75rem 1.5rem;
+      }
+
+      .btn-primary:hover {
+        opacity: 0.9;
+      }
+
+      .btn-primary:active {
+        transform: scale(0.95);
+      }
+
+      .btn-secondary {
+        background-color: #f3f4f6;
+        color: #374151;
+        padding: 0.5rem 1rem;
+      }
+
+      .btn-secondary:hover {
+        background-color: #e5e7eb;
+      }
+
+      .btn-secondary:active {
+        transform: scale(0.95);
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .product-item {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 1rem;
+        }
+
+        .product-controls {
+          width: 100%;
+          justify-content: space-between;
+        }
+
+        .quantity-selector {
+          order: 1;
+        }
+
+        .price-display {
+          order: 2;
+          text-align: left;
+        }
+
+        .remove-button {
+          order: 3;
+        }
+      }
+
+      /* Hover states for cards */
+      .card:hover {
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="card">
+        <div class="header">
+          <h1>Shopping Cart</h1>
+          <a href="#" class="action-link">Continue Shopping</a>
+        </div>
+
+        <div class="product-item">
+          <div class="product-image">
+            <span>IMG</span>
+          </div>
+          <div class="product-details">
+            <h3 class="product-title">Men's Denim Jeans – Skyline Edition</h3>
+            <p class="product-variant">Size: Medium | Color: Blue</p>
+            <p class="product-price">$1,575 each</p>
+          </div>
+          <div class="product-controls">
+            <div class="quantity-selector">
+              <button
+                class="quantity-button minus"
+                aria-label="Decrease quantity"
+              >
+                <span>−</span>
+              </button>
+              <input
+                type="number"
+                class="quantity-input"
+                value="3"
+                min="1"
+                aria-label="Quantity"
+              />
+              <button
+                class="quantity-button plus"
+                aria-label="Increase quantity"
+              >
+                <span>+</span>
+              </button>
+            </div>
+            <div class="price-display">
+              <div class="price-primary">$4,725</div>
+            </div>
+            <button class="remove-button" aria-label="Remove item">
+              <span>×</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="summary">
+          <div class="summary-item">
+            <span class="summary-label">Subtotal</span>
+            <span class="summary-value">$4,725</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">Shipping</span>
+            <span class="summary-value">$60</span>
+          </div>
+          <div class="summary-item total">
+            <span class="summary-label">Total</span>
+            <span class="summary-value">$4,785</span>
+          </div>
+        </div>
+
+        <div class="discount-section">
+          <form class="discount-form">
+            <input
+              type="text"
+              class="discount-input"
+              placeholder="Discount code"
+            />
+            <button type="submit" class="btn btn-primary">Apply</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
