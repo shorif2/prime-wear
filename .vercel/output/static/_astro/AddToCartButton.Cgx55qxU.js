@@ -1,1 +1,0 @@
-import{j as t}from"./jsx-runtime.D_zvdyIk.js";function n({product:a,quantity:s=1,className:r=""}){const o=()=>{};return t.jsxs("button",{onClick:o,className:`bg-primary text-white px-6 py-3 rounded-md hover:bg-primary/90 transition-colors ${r}`,children:[t.jsx("i",{className:"fa-solid fa-cart-plus mr-2"}),"Add to Cart"]})}export{n as default};
