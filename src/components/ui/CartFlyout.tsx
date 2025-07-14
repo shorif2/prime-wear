@@ -1,62 +1,68 @@
 import { useStore } from "@nanostores/react";
-// import styles from "./CartFlyout.module.css";
 import styles from "../../styles/CartFlyout.module.css";
+import { Button } from "./button";
+import { X } from "lucide-react";
 import {
-  cartItems,
-  isCartOpen,
-  removeCartItem,
-  updateCartItemQuantity,
-  getCartTotal,
-} from "../../store/cart";
+  cartStore,
+  isCartOpen as isOpenCart,
+  updateQuantity,
+} from "@/store/cart2";
 
 export default function CartFlyout() {
-  const $isCartOpen = useStore(isCartOpen);
-  const $cartItems = useStore(cartItems);
+  const $isOpen = useStore(isOpenCart);
 
-  // Calculate cart total from the cart items
-  const cartTotal = Object.values($cartItems).reduce((total, item) => {
-    return total + item.price * item.quantity;
-  }, 0);
+  const { items, totalAmount, totalItems } = useStore(cartStore);
 
   const handleQuantityChange = (id: string, newQuantity: number) => {
-    updateCartItemQuantity(id, newQuantity);
+    updateQuantity(id, "default", newQuantity);
   };
 
   const handleRemoveItem = (id: string) => {
-    removeCartItem(id);
+    // removeCartItem(id);
   };
 
   // Don't render anything if cart is not open
-  if (!$isCartOpen) {
+  if (!$isOpen) {
     return null;
   }
 
   return (
     <>
-      <div className={styles.overlay} onClick={() => isCartOpen.set(false)} />
+      <div className={styles.overlay} onClick={() => isOpenCart.set(false)} />
       <aside className={styles.container}>
         <div className={styles.header}>
           <h2>Shopping Cart</h2>
           <button
-            onClick={() => isCartOpen.set(false)}
+            onClick={() => isOpenCart.set(false)}
             className={styles.closeButton}
           >
             ×
           </button>
         </div>
 
-        {Object.values($cartItems).length ? (
+        {Object.values(items).length ? (
           <>
             <ul className={styles.list} role="list">
-              {Object.values($cartItems).map((cartItem) => (
+              {Object.values(items).map((cartItem) => (
                 <li className={styles.listItem} key={cartItem.id}>
                   <img
                     className={styles.listItemImg}
-                    src={cartItem.imageSrc}
+                    src={cartItem.image}
                     alt={cartItem.name}
                   />
                   <div className={styles.itemDetails}>
-                    <h3 className={styles.itemName}>{cartItem.name}</h3>
+                    <div className="flex justify-between items-start">
+                      <h3 className="text-sm">{cartItem.name}</h3>
+
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-6 w-6 rounded-full -mt-1 -mr-1"
+                        onClick={() => handleRemoveItem(cartItem.id)}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
                     <p className={styles.itemPrice}>
                       ${cartItem.price.toFixed(2)}
                     </p>
@@ -91,24 +97,18 @@ export default function CartFlyout() {
                     <p className={styles.itemTotal}>
                       Total: ${(cartItem.price * cartItem.quantity).toFixed(2)}
                     </p>
-                    <button
-                      onClick={() => handleRemoveItem(cartItem.id)}
-                      className={styles.removeButton}
-                    >
-                      Remove
-                    </button>
                   </div>
                 </li>
               ))}
             </ul>
             <div className={styles.cartFooter}>
               <div className={styles.total}>
-                <strong>Total: ${cartTotal.toFixed(2)}</strong>
+                <strong>Total: ${totalAmount.toFixed(2)}</strong>
               </div>
               <button
                 className={styles.checkoutButton}
                 onClick={() => {
-                  isCartOpen.set(false);
+                  isOpenCart.set(false);
                   window.location.href = "/cart";
                 }}
               >
@@ -120,7 +120,7 @@ export default function CartFlyout() {
           <div className={styles.emptyCart}>
             <p>Your cart is empty!</p>
             <button
-              onClick={() => isCartOpen.set(false)}
+              onClick={() => isOpenCart.set(false)}
               className={styles.continueShopping}
             >
               Continue Shopping

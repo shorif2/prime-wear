@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { addCartItem, isCartOpen } from "../../store/cart";
+import { addToCart, isCartOpen } from "@/store/cart2";
 
 interface CardActionProps {
   product?: {
@@ -30,16 +30,48 @@ const CardAction = ({ product }: CardActionProps) => {
     setInputNumber(value);
   };
 
+  const validate = () => {
+    if (!product.variants.length) return { valid: true };
+
+    const needsSize = product.variants.some((v) => v.size);
+    const needsColor = product.variants.some((v) => v.color);
+
+    if (needsSize && !product.selectedSize)
+      return { valid: false, error: "Please select all options" };
+    if (needsColor && !product.selectedColor)
+      return { valid: false, error: "Please select all options" };
+
+    const variant = product.variants.find(
+      (v) =>
+        (!product.selectedSize || v.size === product.selectedSize) &&
+        (!product.selectedColor || v.color === product.selectedColor),
+    );
+
+    if (!variant)
+      return { valid: false, error: "Selected combination not available" };
+    if (variant.stock <= 0)
+      return { valid: false, error: "Selected option out of stock" };
+
+    return { valid: true, variant };
+  };
+
+  const validation = validate();
+  const variant = validation.variant;
+
   const handleAddToCart = () => {
-    if (product) {
-      addCartItem({
-        id: product.id,
-        name: product.name,
-        price: product.price,
-        imageSrc: product.imageSrc || "/images/products/product1.jpg", // fallback image
-        slug: product.slug,
-        quantity: inputNumber,
-      });
+    const itemData = {
+      id: product.id,
+      slug: product.slug,
+      name: product.name,
+      price: product.price,
+      image: product.imageSrc,
+      quantity: inputNumber,
+      variantId: variant?.id,
+      size: product?.selectedSize,
+      color: product.selectedColor,
+    };
+    if (itemData) {
+      addToCart(itemData);
 
       // Open the cart after adding
       isCartOpen.set(true);

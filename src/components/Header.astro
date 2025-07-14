@@ -3,7 +3,7 @@ import CartFlyoutIcon from "../components/ui/CartFlyoutIcon";
 ---
 
 <header class="py-4 shadow-sm bg-white">
-  <div class="container flex items-center justify-between">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
     <a href="index.html">
       <img src="/logo.heif" alt="Logo" class="w-32" />
     </a>
@@ -24,11 +24,7 @@ import CartFlyoutIcon from "../components/ui/CartFlyoutIcon";
         >Search</button
       >
     </div>
+
     <CartFlyoutIcon client:load />
-    <!-- <button id="cartButton" class="flex justify-end items-center space-x-4">
-      <i class="fa-solid fa-bag-shopping text-xl"></i>
-      <span id="cartCount" class="ml-1 text-sm font-medium">0</span>
-      <span class="sr-only">items in cart, view bag</span>
-    </button> -->
   </div>
 </header>

@@ -7,7 +7,7 @@ import Layout from "../../layouts/Layout.astro";
 import { getProductBySlug } from "../../lib/apiRequest/dataFetching";
 
 const { slug } = Astro.params;
-console.log(slug);
+
 if (!slug) {
   return Astro.redirect("/404");
 }

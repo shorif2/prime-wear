@@ -1,16 +1,4 @@
-import { addCartItem, isCartOpen } from "../../store/cart";
-
-interface AddToCartButtonProps {
-  product: {
-    id: string;
-    name: string;
-    price: number;
-    imageSrc: string;
-    slug?: string;
-  };
-  quantity?: number;
-  className?: string;
-}
+import type { AddToCartButtonProps } from "@/lib/interface";
 
 export default function AddToCartButton({
   product,
@@ -18,17 +6,16 @@ export default function AddToCartButton({
   className = "",
 }: AddToCartButtonProps) {
   const handleAddToCart = () => {
-    addCartItem({
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      imageSrc: product.imageSrc,
-      slug: product.slug,
-      quantity: quantity,
-    });
-
-    // Optionally open the cart after adding
-    isCartOpen.set(true);
+    // addCartItem({
+    //   id: product.id,
+    //   name: product.name,
+    //   price: product.price,
+    //   imageSrc: product.imageSrc,
+    //   slug: product.slug,
+    //   quantity: quantity,
+    // });
+    // // Optionally open the cart after adding
+    // isCartOpen.set(true);
   };
 
   return (

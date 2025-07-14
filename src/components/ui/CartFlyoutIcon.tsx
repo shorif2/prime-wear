@@ -1,26 +1,25 @@
+import { useEffect, useState } from "react";
 import { useStore } from "@nanostores/react";
-import { cartItems, isCartOpen } from "../../store/cart";
+import { cartStore, isCartOpen as isOpenCart } from "@/store/cart2";
 
 export default function CartFlyoutIcon() {
-  const $isCartOpen = useStore(isCartOpen);
-  const $cartItems = useStore(cartItems);
+  const $isOpen = useStore(isOpenCart);
+  const { items, totalAmount, totalItems } = useStore(cartStore);
 
-  // Calculate cart item count
-  const cartItemCount = Object.values($cartItems).reduce(
-    (sum, item) => sum + item.quantity,
-    0,
-  );
+  // Add mounted state to ensure client-only rendering for cart count
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   return (
     <button
-      onClick={() => isCartOpen.set(!$isCartOpen)}
-      className="relative p-2 text-black hover:text-red-500 transition-colors"
-      aria-label="Shopping cart"
+      onClick={() => isOpenCart.set(!$isOpen)}
+      id="cartButton"
+      className="flex justify-end items-center space-x-4"
     >
-      <i className="fa-solid fa-shopping-cart text-xl"></i>
-      {cartItemCount > 0 && (
-        <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-          {cartItemCount}
+      <i className="fa-solid fa-bag-shopping text-xl"></i>
+      {mounted && totalItems > 0 && (
+        <span id="cartCount" className="ml-4 text-sm font-medium">
+          {totalItems}
         </span>
       )}
     </button>
