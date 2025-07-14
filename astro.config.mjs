@@ -11,16 +11,14 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineConfig({
   integrations: [react()],
   output: "server",
-  // adapter: netlify(),
-  // adapter: vercel({
-  //   // @ts-ignore - Type definitions might be outdated, documentation indicates this is valid
-  //   // Create a separate Vercel function for each route
-  //   functionPerRoute: true,
-  //   // You might want to enable web analytics or other Vercel features here too
-  //   // webAnalytics: { enabled: true },
-  // }),
-  adapter: netlify(),
-
+  // adapter: netlify({ functionPerRoute: true }),
+  adapter: vercel({
+    // @ts-ignore - Type definitions might be outdated, documentation indicates this is valid
+    // Create a separate Vercel function for each route
+    functionPerRoute: true,
+    // You might want to enable web analytics or other Vercel features here too
+    // webAnalytics: { enabled: true },
+  }),
   image: imageConfig,
 
   vite: {
