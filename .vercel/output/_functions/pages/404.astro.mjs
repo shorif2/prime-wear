@@ -1,6 +1,6 @@
-import { c as createComponent, a as renderComponent, r as renderTemplate, m as maybeRenderHead } from '../chunks/astro/server_BTOzv46n.mjs';
+import { c as createComponent, a as renderComponent, r as renderTemplate, m as maybeRenderHead } from '../chunks/astro/server_DH_zCuNi.mjs';
 import 'kleur/colors';
-import { $ as $$Layout } from '../chunks/Layout_DpZArtzS.mjs';
+import { $ as $$Layout } from '../chunks/Layout_BnXPpko-.mjs';
 export { renderers } from '../renderers.mjs';
 
 const $$404 = createComponent(($$result, $$props, $$slots) => {
@@ -15,9 +15,9 @@ Go back home
 </a> </div> </div> <div class="mt-16 w-full max-w-2xl"> <div class="relative"> <div class="absolute inset-0 flex items-center" aria-hidden="true"> <div class="w-full border-t border-gray-300 dark:border-gray-600"></div> </div> <div class="relative flex justify-center"> <span class="px-2 bg-gray-100 dark:bg-gray-800 text-sm text-gray-500 dark:text-gray-400">
 If you think this is a mistake, please contact support
 </span> </div> </div> </div> </div> ` })}`;
-}, "C:/Projects/Scalius/prime-wear/src/pages/404.astro", void 0);
+}, "C:/Projects/astro-ecommerce/prime-wear/src/pages/404.astro", void 0);
 
-const $$file = "C:/Projects/Scalius/prime-wear/src/pages/404.astro";
+const $$file = "C:/Projects/astro-ecommerce/prime-wear/src/pages/404.astro";
 const $$url = "/404";
 
 const _page = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({

@@ -1,11 +1,12 @@
-import { c as createComponent, b as createAstro, m as maybeRenderHead, a as renderComponent, r as renderTemplate, d as addAttribute, F as Fragment$1 } from '../../chunks/astro/server_BTOzv46n.mjs';
+import { c as createComponent, b as createAstro, m as maybeRenderHead, a as renderComponent, r as renderTemplate, d as addAttribute, F as Fragment$1 } from '../../chunks/astro/server_DH_zCuNi.mjs';
 import 'kleur/colors';
-import { $ as $$Breadcrumb } from '../../chunks/Breadcrumb_Y53Emyab.mjs';
+import { $ as $$Breadcrumb } from '../../chunks/Breadcrumb_BTwoefDY.mjs';
 import { jsx, jsxs, Fragment } from 'react/jsx-runtime';
-import { c as cn, $ as $$ProductCard, g as getProductBySlug } from '../../chunks/dataFetching_D5g0dRSW.mjs';
+import { b as cn, d as addToCart, i as isCartOpen, $ as $$Layout } from '../../chunks/Layout_BnXPpko-.mjs';
 /* empty css                                     */
 import { useState } from 'react';
-import { a as addCartItem, $ as $$Layout } from '../../chunks/Layout_DpZArtzS.mjs';
+import { $ as $$ProductCard } from '../../chunks/ProductCard_DZYeKYxw.mjs';
+import { g as getProductBySlug } from '../../chunks/dataFetching_CkgelruV.mjs';
 export { renderers } from '../../renderers.mjs';
 
 function RichContent({
@@ -74,12 +75,12 @@ const $$Description = createComponent(($$result, $$props, $$slots) => {
   const Astro2 = $$result.createAstro($$Astro$3, $$props, $$slots);
   Astro2.self = $$Description;
   const { description } = Astro2.props;
-  return renderTemplate`${maybeRenderHead()}<div class="container pb-16"> <h3 class="border-b border-gray-200 font-roboto text-gray-800 pb-3 font-medium">
+  return renderTemplate`${maybeRenderHead()}<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16"> <h3 class="border-b border-gray-200 font-roboto text-gray-800 pb-3 font-medium">
 Product details
 </h3> <div class="w-3/5 pt-6"> <div class="text-gray-600"> ${description && renderTemplate`${renderComponent($$result, "RichContent", RichContent, { "content": description })}`} </div> </div> </div>`;
-}, "C:/Projects/Scalius/prime-wear/src/components/SingleProductPage/Description.astro", void 0);
+}, "C:/Projects/astro-ecommerce/prime-wear/src/components/SingleProductPage/Description.astro", void 0);
 
-const CardAction = () => {
+const CardAction = ({ product }) => {
   const [inputNumber, setInputNumber] = useState(1);
   const increaseQuantity = () => {
     setInputNumber((prev) => prev + 1);
@@ -91,8 +92,41 @@ const CardAction = () => {
     const value = Math.max(1, parseInt(e.target.value) || 1);
     setInputNumber(value);
   };
-  const handleAddToCart = (number) => {
-    addCartItem(number);
+  const validate = () => {
+    if (!product.variants.length) return { valid: true };
+    const needsSize = product.variants.some((v) => v.size);
+    const needsColor = product.variants.some((v) => v.color);
+    if (needsSize && !product.selectedSize)
+      return { valid: false, error: "Please select all options" };
+    if (needsColor && !product.selectedColor)
+      return { valid: false, error: "Please select all options" };
+    const variant2 = product.variants.find(
+      (v) => (!product.selectedSize || v.size === product.selectedSize) && (!product.selectedColor || v.color === product.selectedColor)
+    );
+    if (!variant2)
+      return { valid: false, error: "Selected combination not available" };
+    if (variant2.stock <= 0)
+      return { valid: false, error: "Selected option out of stock" };
+    return { valid: true, variant: variant2 };
+  };
+  const validation = validate();
+  const variant = validation.variant;
+  const handleAddToCart = () => {
+    const itemData = {
+      id: product.id,
+      slug: product.slug,
+      name: product.name,
+      price: product.price,
+      image: product.imageSrc,
+      quantity: inputNumber,
+      variantId: variant?.id,
+      size: product?.selectedSize,
+      color: product.selectedColor
+    };
+    if (itemData) {
+      addToCart(itemData);
+      isCartOpen.set(true);
+    }
   };
   return /* @__PURE__ */ jsxs(Fragment, { children: [
     /* @__PURE__ */ jsxs("div", { className: "mt-4", children: [
@@ -140,7 +174,7 @@ const CardAction = () => {
       /* @__PURE__ */ jsxs(
         "button",
         {
-          onClick: () => handleAddToCart(inputNumber),
+          onClick: handleAddToCart,
           className: "bg-primary border border-primary text-white px-8 py-2 font-medium rounded uppercase flex items-center gap-2 hover:bg-transparent hover:text-primary transition",
           children: [
             /* @__PURE__ */ jsx("i", { className: "fa-solid fa-bag-shopping" }),
@@ -170,30 +204,37 @@ const $$ProductDetail = createComponent(($$result, $$props, $$slots) => {
   const productData = Astro2.props.productData;
   const { product, category, images, variants, relatedProducts } = productData || {};
   const { name, price, metaDescription, discountedPrice } = product;
-  return renderTemplate`${maybeRenderHead()}<main class="container grid grid-cols-2 gap-6" data-astro-cid-gpp6xnpz> <div data-astro-cid-gpp6xnpz> <img${addAttribute(images[0].url, "src")} alt="product" class="w-full" data-astro-cid-gpp6xnpz> <div class="grid grid-cols-5 gap-4 mt-4" data-astro-cid-gpp6xnpz> ${images?.map((image) => renderTemplate`${renderComponent($$result, "Fragment", Fragment$1, { "key": image.id }, { "default": ($$result2) => renderTemplate` <img${addAttribute(image.url, "src")} alt="product2" class="w-full cursor-pointer border border-primary" data-astro-cid-gpp6xnpz> ` })}`)} </div> </div> <div data-astro-cid-gpp6xnpz> <h2 class="text-3xl font-medium uppercase mb-2" data-astro-cid-gpp6xnpz>${name}</h2> <div class="flex items-center mb-4" data-astro-cid-gpp6xnpz> <div class="flex gap-1 text-sm text-yellow-400" data-astro-cid-gpp6xnpz> <span data-astro-cid-gpp6xnpz><i class="fa-solid fa-star" data-astro-cid-gpp6xnpz></i></span> <span data-astro-cid-gpp6xnpz><i class="fa-solid fa-star" data-astro-cid-gpp6xnpz></i></span> <span data-astro-cid-gpp6xnpz><i class="fa-solid fa-star" data-astro-cid-gpp6xnpz></i></span> <span data-astro-cid-gpp6xnpz><i class="fa-solid fa-star" data-astro-cid-gpp6xnpz></i></span> <span data-astro-cid-gpp6xnpz><i class="fa-solid fa-star" data-astro-cid-gpp6xnpz></i></span> </div> <div class="text-xs text-gray-500 ml-3" data-astro-cid-gpp6xnpz>(150 Reviews)</div> </div> <div class="space-y-2" data-astro-cid-gpp6xnpz> <p class="text-gray-800 font-semibold space-x-2" data-astro-cid-gpp6xnpz> <span data-astro-cid-gpp6xnpz>Availability: </span> <span class="text-green-600" data-astro-cid-gpp6xnpz>In Stock</span> </p> <p class="space-x-2" data-astro-cid-gpp6xnpz> <span class="text-gray-800 font-semibold" data-astro-cid-gpp6xnpz>Brand: </span> <span class="text-gray-600" data-astro-cid-gpp6xnpz>Apex</span> </p> <p class="space-x-2" data-astro-cid-gpp6xnpz> <span class="text-gray-800 font-semibold" data-astro-cid-gpp6xnpz>Category: </span> <span class="text-gray-600" data-astro-cid-gpp6xnpz>${category?.name}</span> </p> <p class="space-x-2" data-astro-cid-gpp6xnpz> <span class="text-gray-800 font-semibold" data-astro-cid-gpp6xnpz>SKU: </span> <span class="text-gray-600" data-astro-cid-gpp6xnpz>BE45VGRT</span> </p> </div> <div class="flex items-baseline mb-1 space-x-2 font-roboto mt-4" data-astro-cid-gpp6xnpz> <p class="text-xl text-primary font-semibold" data-astro-cid-gpp6xnpz>$${discountedPrice}</p> <p class="text-base text-gray-400 line-through" data-astro-cid-gpp6xnpz>$${price}</p> </div> <p class="mt-4 text-gray-600" data-astro-cid-gpp6xnpz>
+  console.log(productData);
+  return renderTemplate`${maybeRenderHead()}<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 gap-6" data-astro-cid-gpp6xnpz> <div data-astro-cid-gpp6xnpz> <img${addAttribute(images[0].url, "src")} alt="product" class="w-full" data-astro-cid-gpp6xnpz> <div class="grid grid-cols-5 gap-4 mt-4" data-astro-cid-gpp6xnpz> ${images?.map((image) => renderTemplate`${renderComponent($$result, "Fragment", Fragment$1, { "key": image.id }, { "default": ($$result2) => renderTemplate` <img${addAttribute(image.url, "src")} alt="product2" class="w-full cursor-pointer border border-primary" data-astro-cid-gpp6xnpz> ` })}`)} </div> </div> <div data-astro-cid-gpp6xnpz> <h2 class="text-3xl font-medium uppercase mb-2" data-astro-cid-gpp6xnpz>${name}</h2> <div class="flex items-center mb-4" data-astro-cid-gpp6xnpz> <div class="flex gap-1 text-sm text-yellow-400" data-astro-cid-gpp6xnpz> <span data-astro-cid-gpp6xnpz><i class="fa-solid fa-star" data-astro-cid-gpp6xnpz></i></span> <span data-astro-cid-gpp6xnpz><i class="fa-solid fa-star" data-astro-cid-gpp6xnpz></i></span> <span data-astro-cid-gpp6xnpz><i class="fa-solid fa-star" data-astro-cid-gpp6xnpz></i></span> <span data-astro-cid-gpp6xnpz><i class="fa-solid fa-star" data-astro-cid-gpp6xnpz></i></span> <span data-astro-cid-gpp6xnpz><i class="fa-solid fa-star" data-astro-cid-gpp6xnpz></i></span> </div> <div class="text-xs text-gray-500 ml-3" data-astro-cid-gpp6xnpz>(150 Reviews)</div> </div> <div class="space-y-2" data-astro-cid-gpp6xnpz> <p class="text-gray-800 font-semibold space-x-2" data-astro-cid-gpp6xnpz> <span data-astro-cid-gpp6xnpz>Availability: </span> <span class="text-green-600" data-astro-cid-gpp6xnpz>In Stock</span> </p> <p class="space-x-2" data-astro-cid-gpp6xnpz> <span class="text-gray-800 font-semibold" data-astro-cid-gpp6xnpz>Brand: </span> <span class="text-gray-600" data-astro-cid-gpp6xnpz>Apex</span> </p> <p class="space-x-2" data-astro-cid-gpp6xnpz> <span class="text-gray-800 font-semibold" data-astro-cid-gpp6xnpz>Category: </span> <span class="text-gray-600" data-astro-cid-gpp6xnpz>${category?.name}</span> </p> <p class="space-x-2" data-astro-cid-gpp6xnpz> <span class="text-gray-800 font-semibold" data-astro-cid-gpp6xnpz>SKU: </span> <span class="text-gray-600" data-astro-cid-gpp6xnpz>BE45VGRT</span> </p> </div> <div class="flex items-baseline mb-1 space-x-2 font-roboto mt-4" data-astro-cid-gpp6xnpz> <p class="text-xl text-primary font-semibold" data-astro-cid-gpp6xnpz>$${discountedPrice}</p> <p class="text-base text-gray-400 line-through" data-astro-cid-gpp6xnpz>$${price}</p> </div> <p class="mt-4 text-gray-600" data-astro-cid-gpp6xnpz>
 Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos eius eum
       reprehenderit dolore vel mollitia optio consequatur hic asperiores
       inventore suscipit, velit consequuntur, voluptate doloremque iure
       necessitatibus adipisci magnam porro.
-</p> ${renderComponent($$result, "CardAction", CardAction, { "client:load": true, "client:component-hydration": "load", "client:component-path": "C:/Projects/Scalius/prime-wear/src/components/SingleProductPage/CardAction", "client:component-export": "default", "data-astro-cid-gpp6xnpz": true })} <!-- social icon --> <div class="flex gap-3 mt-4" data-astro-cid-gpp6xnpz> <a href="#" class="text-gray-400 hover:text-gray-500 h-8 w-8 rounded-full border border-gray-300 flex items-center justify-center" data-astro-cid-gpp6xnpz> <i class="fa-brands fa-facebook-f" data-astro-cid-gpp6xnpz></i> </a> <a href="#" class="text-gray-400 hover:text-gray-500 h-8 w-8 rounded-full border border-gray-300 flex items-center justify-center" data-astro-cid-gpp6xnpz> <i class="fa-brands fa-twitter" data-astro-cid-gpp6xnpz></i> </a> <a href="#" class="text-gray-400 hover:text-gray-500 h-8 w-8 rounded-full border border-gray-300 flex items-center justify-center" data-astro-cid-gpp6xnpz> <i class="fa-brands fa-instagram" data-astro-cid-gpp6xnpz></i> </a> </div> </div> </main> `;
-}, "C:/Projects/Scalius/prime-wear/src/components/SingleProductPage/ProductDetail.astro", void 0);
+</p> ${renderComponent($$result, "CardAction", CardAction, { "product": {
+    id: product?.id,
+    name: product?.name,
+    price: product?.discountedPrice || product?.price,
+    imageSrc: images?.[0]?.url,
+    slug: product?.slug,
+    variants
+  }, "client:load": true, "client:component-hydration": "load", "client:component-path": "C:/Projects/astro-ecommerce/prime-wear/src/components/SingleProductPage/CardAction", "client:component-export": "default", "data-astro-cid-gpp6xnpz": true })} <!-- social icon --> <div class="flex gap-3 mt-4" data-astro-cid-gpp6xnpz> <a href="#" class="text-gray-400 hover:text-gray-500 h-8 w-8 rounded-full border border-gray-300 flex items-center justify-center" data-astro-cid-gpp6xnpz> <i class="fa-brands fa-facebook-f" data-astro-cid-gpp6xnpz></i> </a> <a href="#" class="text-gray-400 hover:text-gray-500 h-8 w-8 rounded-full border border-gray-300 flex items-center justify-center" data-astro-cid-gpp6xnpz> <i class="fa-brands fa-twitter" data-astro-cid-gpp6xnpz></i> </a> <a href="#" class="text-gray-400 hover:text-gray-500 h-8 w-8 rounded-full border border-gray-300 flex items-center justify-center" data-astro-cid-gpp6xnpz> <i class="fa-brands fa-instagram" data-astro-cid-gpp6xnpz></i> </a> </div> </div> </main> `;
+}, "C:/Projects/astro-ecommerce/prime-wear/src/components/SingleProductPage/ProductDetail.astro", void 0);
 
 const $$Astro$1 = createAstro();
 const $$RelatedProduct = createComponent(($$result, $$props, $$slots) => {
   const Astro2 = $$result.createAstro($$Astro$1, $$props, $$slots);
   Astro2.self = $$RelatedProduct;
   const { relatedProducts } = Astro2.props;
-  return renderTemplate`${maybeRenderHead()}<div class="container pb-16"> <h2 class="text-2xl font-medium text-gray-800 uppercase mb-6">
+  return renderTemplate`${maybeRenderHead()}<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16"> <h2 class="text-2xl font-medium text-gray-800 uppercase mb-6">
 Related products
 </h2> <div class="grid grid-cols-4 gap-6"> ${relatedProducts?.map((product) => renderTemplate`${renderComponent($$result, "Fragment", Fragment$1, { "key": product.id, "class": "" }, { "default": ($$result2) => renderTemplate` ${renderComponent($$result2, "ProductCard", $$ProductCard, { "product": product })} ` })}`)} </div> </div>`;
-}, "C:/Projects/Scalius/prime-wear/src/components/SingleProductPage/RelatedProduct.astro", void 0);
+}, "C:/Projects/astro-ecommerce/prime-wear/src/components/SingleProductPage/RelatedProduct.astro", void 0);
 
 const $$Astro = createAstro();
 const $$slug = createComponent(async ($$result, $$props, $$slots) => {
   const Astro2 = $$result.createAstro($$Astro, $$props, $$slots);
   Astro2.self = $$slug;
   const { slug } = Astro2.params;
-  console.log(slug);
   if (!slug) {
     return Astro2.redirect("/404");
   }
@@ -203,9 +244,9 @@ const $$slug = createComponent(async ($$result, $$props, $$slots) => {
   }
   const { product, relatedProducts } = productData;
   return renderTemplate`${renderComponent($$result, "Layout", $$Layout, { "title": "Prime Ware", "description": "This is product deatils pages" }, { "default": async ($$result2) => renderTemplate` ${renderComponent($$result2, "Breadcrumb", $$Breadcrumb, {})} ${renderComponent($$result2, "ProductDetail", $$ProductDetail, { "productData": productData })} ${renderComponent($$result2, "Description", $$Description, { "description": product?.description })} ${renderComponent($$result2, "RelatedProduct", $$RelatedProduct, { "relatedProducts": relatedProducts })} ` })}`;
-}, "C:/Projects/Scalius/prime-wear/src/pages/products/[slug].astro", void 0);
+}, "C:/Projects/astro-ecommerce/prime-wear/src/pages/products/[slug].astro", void 0);
 
-const $$file = "C:/Projects/Scalius/prime-wear/src/pages/products/[slug].astro";
+const $$file = "C:/Projects/astro-ecommerce/prime-wear/src/pages/products/[slug].astro";
 const $$url = "/products/[slug]";
 
 const _page = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
