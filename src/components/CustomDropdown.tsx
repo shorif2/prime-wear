@@ -97,7 +97,7 @@ export default function CustomDropdown({
       <button
         type="button"
         id={id}
-        className={`flex items-center justify-between w-full px-2.5 py-1.5 text-left bg-white border rounded-md h-8 sm:h-9 text-xs sm:text-sm ${
+        className={`flex items-center justify-between w-full z-50 px-2.5 py-1.5 text-left bg-white border rounded-md h-8 sm:h-9 text-xs sm:text-sm ${
           disabled
             ? "opacity-50 cursor-not-allowed"
             : "cursor-pointer hover:bg-gray-50"
@@ -135,12 +135,12 @@ export default function CustomDropdown({
           role="listbox"
           onKeyDown={handleKeyDown}
         >
-          <div className="sticky top-0 p-1.5 bg-white border-b">
+          <div className="sticky top-0 z-50 p-1.5 bg-white border-b">
             <div className="relative">
               <input
                 ref={searchInputRef}
                 type="text"
-                className="w-full px-2 py-1 border rounded-md text-xs sm:text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 h-8 sm:h-9"
+                className="w-full px-2 py-1 border rounded-md text-xs z-50 sm:text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 h-8 sm:h-9"
                 placeholder={`Search ${placeholder.toLowerCase()}`}
                 value={searchTerm}
                 onChange={handleSearchChange}
@@ -170,13 +170,13 @@ export default function CustomDropdown({
             </div>
           </div>
 
-          <div className="overflow-auto max-h-[200px] sm:max-h-[240px]">
+          <div className="overflow-auto max-h-[200px] sm:max-h-[240px] z-50">
             <ul className="py-1">
               {filteredOptions.length > 0 ? (
                 filteredOptions.map((option) => (
                   <li
                     key={option.value}
-                    className={`px-2.5 py-1 cursor-pointer hover:bg-gray-100 text-xs sm:text-sm ${
+                    className={`px-2.5 py-1 z-50 cursor-pointer hover:bg-gray-100 text-xs sm:text-sm ${
                       option.value === value ? "bg-gray-100 font-medium" : ""
                     }`}
                     onClick={() => handleSelect(option)}
