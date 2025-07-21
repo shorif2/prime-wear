@@ -133,3 +133,67 @@ export async function getProductBySlug(
     return null;
   }
 }
+
+// Fetches products by category slug with pagination and sorting
+export async function getProductsByCategorySlug(
+  categorySlug: string,
+  options: {
+    page?: number;
+    limit?: number;
+    sort?: string;
+    minPrice?: number;
+    maxPrice?: number;
+    hasDiscount?: boolean;
+    freeDelivery?: boolean;
+  } = {},
+): Promise<{
+  products: Array<{
+    id: string;
+    name: string;
+    price: number;
+    discountPercentage: number | null;
+    slug: string;
+    imageUrl: string | null;
+    discountedPrice: number;
+    freeDelivery?: boolean;
+  }>;
+  pagination: {
+    total: number;
+    totalPages: number;
+    page: number;
+  };
+} | null> {
+  try {
+    const params = new URLSearchParams();
+    if (options.page) params.set("page", options.page.toString());
+    if (options.limit) params.set("limit", options.limit.toString());
+    if (options.sort) params.set("sort", options.sort);
+    if (options.minPrice !== undefined)
+      params.set("minPrice", options.minPrice.toString());
+    if (options.maxPrice !== undefined)
+      params.set("maxPrice", options.maxPrice.toString());
+    if (options.hasDiscount !== undefined)
+      params.set("hasDiscount", String(options.hasDiscount));
+    if (options.freeDelivery !== undefined)
+      params.set("freeDelivery", String(options.freeDelivery));
+    const url = createApiUrl(
+      `/categories/${categorySlug}/products?${params.toString()}`,
+    );
+    const response = await fetchWithRetry(url);
+    if (!response.ok) {
+      if (response.status === 404) return null;
+      throw new Error(`API error: ${response.status}`);
+    }
+    const data = await response.json();
+    return {
+      products: data.products || [],
+      pagination: data.pagination || { total: 0, totalPages: 0, page: 1 },
+    };
+  } catch (error) {
+    console.error(
+      `Error fetching products for category slug "${categorySlug}":`,
+      error,
+    );
+    return null;
+  }
+}

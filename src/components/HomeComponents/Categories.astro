@@ -9,16 +9,26 @@ const categories = categoriesData?.categories || [];
   <h2 class="text-2xl font-medium text-gray-800 uppercase mb-6">
     shop by category
   </h2>
-  <div class="grid grid-cols-8 gap-3">
+  <div
+    class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-8 gap-4 sm:gap-6"
+  >
+    <!-- category card -->
     {
       categories?.map((category) => (
         <Fragment key={category.id}>
-              <a
-              href={`/categories/${category?.slug}`}
-              class="border flex flex-col justify-center items-center py-2 px-3 text-sm space-y-2 rounded-xl">
-              <img class="w-12" src={category?.imageUrl} alt="Skincare &amp; Beauty"/>
-              <div class="wgt-h4k2m9-title">{category?.name}</div>
-            </a>
+          <a
+            href={`/categories/${category?.slug}`}
+            class="group border border-gray-200 py-6 bg-white flex flex-col justify-center items-center text-xs space-y-2 rounded-xl shadow-sm transition-all duration-200 hover:shadow-lg hover:border-primary-500 hover:bg-primary-50 hover:scale-102 focus:outline-none focus:ring-2 focus:ring-primary-400"
+          >
+            <img
+              class="w-10 h-10 object-cover group-hover:scale-102 transition-all duration-200 "
+              src={category?.imageUrl}
+              alt={category?.name || "Category"}
+            />
+            <div class="font-semibold text-gray-800 group-hover:text-primary-600 text-xs text-center truncate">
+              {category?.name}
+            </div>
+          </a>
         </Fragment>
       ))
     }

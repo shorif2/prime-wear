@@ -1,5 +1,50 @@
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-  <a href="#">
-    <img src="/images/offer.jpg" alt="ads" class="w-full" />
-  </a>
+---
+import { getActiveHomepageWidgets } from "@/lib/apiRequest/widgets";
+import type { ApiWidget } from "@/lib/interface";
+
+const widgetData = await getActiveHomepageWidgets();
+const activeWidgets = widgetData || [];
+
+const fixedTopWidgets: ApiWidget[] = [];
+const fixedBottomWidgets: ApiWidget[] = [];
+const widgetsBeforeCollection: Record<string, ApiWidget[]> = {};
+const widgetsAfterCollection: Record<string, ApiWidget[]> = {};
+
+activeWidgets.forEach((widget) => {
+  if (widget.placementRule === "fixed_top_homepage") {
+    fixedTopWidgets.push(widget);
+  } else if (widget.placementRule === "fixed_bottom_homepage") {
+    fixedBottomWidgets.push(widget);
+  } else if (
+    widget.placementRule === "before_collection" &&
+    widget.referenceCollectionId
+  ) {
+    if (!widgetsBeforeCollection[widget.referenceCollectionId]) {
+      widgetsBeforeCollection[widget.referenceCollectionId] = [];
+    }
+    widgetsBeforeCollection[widget.referenceCollectionId].push(widget);
+  } else if (
+    widget.placementRule === "after_collection" &&
+    widget.referenceCollectionId
+  ) {
+    if (!widgetsAfterCollection[widget.referenceCollectionId]) {
+      widgetsAfterCollection[widget.referenceCollectionId] = [];
+    }
+    widgetsAfterCollection[widget.referenceCollectionId].push(widget);
+  }
+});
+---
+
+<div class="pb-10">
+  {
+    (widgetsAfterCollection["awjozLK92GIUPLIwVvBU-"] || []).map((widget) => (
+      <Fragment>
+        {widget.cssContent && <style set:html={widget.cssContent} />}
+        <div
+          class="widget-container widget-after-collection"
+          set:html={widget.htmlContent}
+        />
+      </Fragment>
+    ))
+  }
 </div>

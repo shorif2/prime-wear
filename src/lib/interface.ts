@@ -376,3 +376,159 @@ export interface AddToCartButtonProps {
   quantity?: number;
   className?: string;
 }
+
+export interface Category {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  imageUrl: string | null;
+  metaTitle: string | null;
+  metaDescription: string | null;
+  createdAt: string;
+}
+
+export interface FilterableAttribute {
+  id: string;
+  name: string;
+  slug: string;
+  values: string[];
+}
+
+export interface SearchResults {
+  products: Product[];
+  categories: Category[];
+  pages: Page[];
+  success: boolean;
+  query: string;
+  timestamp: string;
+}
+export interface Page {
+  id: string;
+  title: string;
+  slug: string;
+  content: string;
+  metaTitle: string | null;
+  metaDescription: string | null;
+  isPublished: boolean;
+  publishedAt: number | null;
+  sortOrder: number;
+  createdAt: number;
+  updatedAt: number;
+  deletedAt: number | null;
+}
+
+export interface Product {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  price: number;
+  discountPercentage: number;
+  discountedPrice: number;
+  freeDelivery: boolean;
+  isActive: boolean;
+  metaTitle: string | null;
+  metaDescription: string | null;
+  features?: string[];
+  categoryId: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
+  imageUrl?: string | null;
+  category?: CategorySummary;
+}
+
+export interface CategorySummary {
+  id: string;
+  name: string;
+  slug: string;
+}
+
+export interface SearchResults {
+  products: Product[];
+  categories: Category[];
+  pages: Page[];
+  success: boolean;
+  query: string;
+  timestamp: string;
+}
+
+export interface Product {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  price: number;
+  discountPercentage: number;
+  discountedPrice: number;
+  freeDelivery: boolean;
+  isActive: boolean;
+  metaTitle: string | null;
+  metaDescription: string | null;
+  features?: string[];
+  categoryId: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
+  imageUrl?: string | null;
+  category?: CategorySummary;
+}
+export interface Page {
+  id: string;
+  title: string;
+  slug: string;
+  content: string;
+  metaTitle: string | null;
+  metaDescription: string | null;
+  isPublished: boolean;
+  publishedAt: number | null;
+  sortOrder: number;
+  createdAt: number;
+  updatedAt: number;
+  deletedAt: number | null;
+}
+
+export interface ApiWidget {
+  id: string;
+  name: string;
+  htmlContent: string;
+  cssContent?: string | null;
+  isActive: boolean;
+  displayTarget: string;
+  placementRule: string;
+  referenceCollectionId?: string | null;
+  sortOrder: number;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt?: string | null;
+}
+export interface ApiWidget {
+  id: string;
+  name: string;
+  htmlContent: string;
+  cssContent?: string | null;
+  isActive: boolean;
+  displayTarget: string;
+  placementRule: string;
+  referenceCollectionId?: string | null;
+  sortOrder: number;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt?: string | null;
+}
+
+export interface ApiWidget {
+  id: string;
+  name: string;
+  htmlContent: string;
+  cssContent?: string | null;
+  isActive: boolean;
+  displayTarget: string;
+  placementRule: string;
+  referenceCollectionId?: string | null;
+  sortOrder: number;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt?: string | null;
+}

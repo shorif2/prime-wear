@@ -6,10 +6,7 @@ export default function OrderSuccessButtons() {
   const [isAnimated, setIsAnimated] = useState(false);
 
   useEffect(() => {
-    // Clear the cart when the component mounts
-    console.log("Order success page loaded, clearing cart");
     clearCart();
-
     // Trigger animation after a short delay
     setTimeout(() => {
       setIsAnimated(true);

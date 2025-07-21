@@ -1,0 +1,646 @@
+---
+// Enhanced search bar component with dropdown results
+
+interface Props {
+  containerClass?: string;
+  placeholder?: string;
+  buttonText?: string;
+  mobileView?: boolean;
+}
+
+const {
+  containerClass = "",
+  placeholder = "Search for products, categories, and more...",
+  buttonText = "",
+  mobileView = false,
+} = Astro.props;
+
+// Get API base URL for client-side use
+const apiBaseUrl = import.meta.env.PUBLIC_API_URL || "/api/v1";
+---
+
+<div class={`search-bar-container relative `}>
+  <form
+    class="group relative"
+    id={mobileView ? "mobileSearchForm" : "searchForm"}
+  >
+    <div class="relative flex w-full">
+      <input
+        type="text"
+        placeholder={placeholder}
+        autocomplete="off"
+        aria-label="Search"
+        class="peer w-full rounded-lg bg-white pl-12 pr-4 py-2 text-[16px] placeholder:text-gray-400 border border-gray-300
+               shadow-sm transition-all duration-200 ease-in-out
+               focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10
+               hover:border-gray-400"
+        id={mobileView ? "mobileSearchInput" : "searchInput"}
+      />
+
+      <div
+        class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none"
+      >
+        <svg
+          class="w-5 h-5 text-gray-500 transition-colors duration-200 peer-focus:text-primary"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+          aria-hidden="true"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+            clip-rule="evenodd"></path>
+        </svg>
+      </div>
+      <!-- Clear (X) icon button -->
+      <button
+        type="button"
+        id={mobileView ? "mobileClearSearchBtn" : "clearSearchBtn"}
+        class="absolute right-4 top-1/2 -translate-y-1/2 flex items-center justify-center w-7 h-7 rounded-full text-gray-500 hover:text-red-500 transition-opacity duration-150 opacity-0 pointer-events-none"
+        tabindex="-1"
+        aria-label="Clear search"
+        style="z-index:2;"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="w-4 h-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+      {
+        buttonText && (
+          <button
+            type="submit"
+            aria-label="Submit search"
+            class="absolute inset-y-0 right-0 flex items-center px-4 text-white bg-primary rounded-r-lg 
+                 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-primary
+                 transition-colors duration-200"
+          >
+            {buttonText}
+          </button>
+        )
+      }
+    </div>
+
+    <!-- Search results dropdown -->
+    <div
+      id={mobileView ? "mobileSearchResults" : "searchResults"}
+      class="search-results-dropdown absolute left-0 right-0 bg-white mt-2 rounded-lg shadow-xl overflow-hidden z-50
+             border border-gray-200 max-h-[80vh] overflow-y-auto hidden
+             transform opacity-0 scale-95 transition-all duration-200 origin-top"
+    >
+      <div
+        class="search-loading px-4 py-6 text-center text-gray-500 text-sm hidden"
+      >
+        <div class="flex flex-col items-center justify-center space-y-3">
+          <svg
+            class="animate-spin h-6 w-6 text-primary"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              class="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              stroke-width="4"></circle>
+            <path
+              class="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            ></path>
+          </svg>
+          <span>Searching for you...</span>
+        </div>
+      </div>
+
+      <div
+        class="search-error px-6 py-5 text-center text-red-500 text-sm hidden"
+      >
+        <div class="flex flex-col items-center">
+          <svg
+            class="w-8 h-8 text-red-400 mb-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <span>An error occurred while searching. Please try again.</span>
+        </div>
+      </div>
+
+      <div
+        class="search-no-results px-6 py-10 text-center text-gray-600 hidden"
+      >
+        <svg
+          class="mx-auto h-12 w-12 text-gray-400 mb-4"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="1.5"
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        </svg>
+        <p class="text-lg font-medium text-gray-700">No results found</p>
+        <p class="text-sm mt-2 text-gray-500 max-w-sm mx-auto">
+          Try different keywords or check for spelling mistakes
+        </p>
+      </div>
+
+      <!-- Results content -->
+      <div class="results-content">
+        <!-- Products section (populated by JS) -->
+        <div class="products-results hidden">
+          <div class="px-4 py-2.5 bg-gray-50 border-b border-gray-200">
+            <h3
+              class="text-xs uppercase font-semibold text-gray-600 tracking-wide"
+            >
+              Products
+            </h3>
+          </div>
+          <div class="products-list divide-y divide-gray-100"></div>
+          <a
+            href="#"
+            class="view-all-products block px-4 py-3 text-sm text-center text-gray-700 bg-gray-50 hover:bg-gray-100 border-t border-gray-200 transition-colors font-medium"
+            >View all products <span class="inline-block ml-1">→</span></a
+          >
+        </div>
+
+        <!-- Categories section (populated by JS) -->
+        <div class="categories-results hidden">
+          <div class="px-4 py-2.5 bg-gray-50 border-b border-gray-200">
+            <h3
+              class="text-xs uppercase font-semibold text-gray-600 tracking-wide"
+            >
+              Categories
+            </h3>
+          </div>
+          <div class="categories-list divide-y divide-gray-100"></div>
+        </div>
+
+        <!-- Pages section (populated by JS) -->
+        <div class="pages-results hidden">
+          <div class="px-4 py-2.5 bg-gray-50 border-b border-gray-200">
+            <h3
+              class="text-xs uppercase font-semibold text-gray-600 tracking-wide"
+            >
+              Pages
+            </h3>
+          </div>
+          <div class="pages-list divide-y divide-gray-100"></div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<script is:inline define:vars={{ mobileView, apiBaseUrl }}>
+  // Get DOM elements based on mobile or desktop view
+  const searchFormId = mobileView ? "mobileSearchForm" : "searchForm";
+  const searchInputId = mobileView ? "mobileSearchInput" : "searchInput";
+  const searchResultsId = mobileView ? "mobileSearchResults" : "searchResults";
+
+  // Get DOM elements
+  const searchForm = document.getElementById(searchFormId);
+  const searchInput = document.getElementById(searchInputId);
+  const searchResults = document.getElementById(searchResultsId);
+
+  if (searchForm && searchInput && searchResults) {
+    // Get sections within results
+    const loadingSection = searchResults.querySelector(".search-loading");
+    const errorSection = searchResults.querySelector(".search-error");
+    const noResultsSection = searchResults.querySelector(".search-no-results");
+    const productsSection = searchResults.querySelector(".products-results");
+    const categoriesSection = searchResults.querySelector(
+      ".categories-results",
+    );
+    const pagesSection = searchResults.querySelector(".pages-results");
+
+    // Get lists within sections
+    const productsList = searchResults.querySelector(".products-list");
+    const categoriesList = searchResults.querySelector(".categories-list");
+    const pagesList = searchResults.querySelector(".pages-list");
+    const viewAllProductsLink =
+      searchResults.querySelector(".view-all-products");
+
+    // Function to show the dropdown with animation
+    function showDropdown() {
+      searchResults.classList.remove("hidden");
+      // Trigger animation in the next frame
+      setTimeout(() => {
+        searchResults.classList.remove("opacity-0", "scale-95");
+        searchResults.classList.add("opacity-100", "scale-100");
+      }, 10);
+    }
+
+    // Function to hide the dropdown with animation
+    function hideDropdown() {
+      searchResults.classList.add("opacity-0", "scale-95");
+      searchResults.classList.remove("opacity-100", "scale-100");
+      // Wait for animation to complete before hiding
+      setTimeout(() => {
+        searchResults.classList.add("hidden");
+      }, 200);
+    }
+
+    // Debounce function
+    function debounce(func, timeout = 300) {
+      let timer;
+      return (...args) => {
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+          func.apply(this, args);
+        }, timeout);
+      };
+    }
+
+    // Enhanced fetch function with retry logic and proper error handling
+    async function fetchWithRetry(
+      url,
+      options = {},
+      retries = 2,
+      timeout = 10000,
+    ) {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+      try {
+        const response = await fetch(url, {
+          ...options,
+          signal: controller.signal,
+        });
+
+        clearTimeout(timeoutId);
+
+        if (!response.ok) {
+          throw new Error(`API error: ${response.status}`);
+        }
+
+        return response;
+      } catch (error) {
+        clearTimeout(timeoutId);
+        if (retries > 0 && error.name !== "AbortError") {
+          console.warn(`Fetch to ${url} failed. Retrying... (${retries} left)`);
+          await new Promise((resolve) =>
+            setTimeout(resolve, 300 * (3 - retries)),
+          );
+          return fetchWithRetry(url, options, retries - 1, timeout);
+        }
+        throw error;
+      }
+    }
+
+    // Function to perform search using proper API client pattern
+    const performSearch = debounce(async (query) => {
+      // If query is empty, hide results
+      if (!query.trim()) {
+        hideDropdown();
+        return;
+      }
+
+      // Show loading state
+      showDropdown();
+      loadingSection.classList.remove("hidden");
+      errorSection.classList.add("hidden");
+      noResultsSection.classList.add("hidden");
+      productsSection.classList.add("hidden");
+      categoriesSection.classList.add("hidden");
+      pagesSection.classList.add("hidden");
+
+      try {
+        // Build search URL with proper parameters
+        const params = new URLSearchParams({
+          q: query,
+          limit: "5", // Limit results for dropdown
+          searchPages: "true",
+          searchCategories: "true",
+        });
+
+        // Note: Price filters are not applied to dropdown search for simplicity
+        // Users can use the full search page for advanced filtering
+
+        // Use the API base URL passed from server-side
+        const searchUrl = `${apiBaseUrl}/search?${params.toString()}`;
+
+        // Use enhanced fetch with retry logic
+        const response = await fetchWithRetry(searchUrl, {}, 2, 10000);
+        const data = await response.json();
+
+        // Hide loading
+        loadingSection.classList.add("hidden");
+
+        // Handle unsuccessful response or no data
+        if (!data || data.success === false) {
+          errorSection.classList.remove("hidden");
+          return;
+        }
+
+        // Check if we have results
+        const hasProducts = data.products && data.products.length > 0;
+        const hasCategories = data.categories && data.categories.length > 0;
+        const hasPages = data.pages && data.pages.length > 0;
+        const hasAnyResults = hasProducts || hasCategories || hasPages;
+
+        // Show appropriate sections based on results
+        if (!hasAnyResults) {
+          noResultsSection.classList.remove("hidden");
+        } else {
+          // Process and display products
+          if (hasProducts) {
+            productsSection.classList.remove("hidden");
+            productsList.innerHTML = "";
+
+            // Take at most 5 products for the dropdown
+            const topProducts = data.products.slice(0, 5);
+
+            topProducts.forEach((product) => {
+              const productElement = document.createElement("a");
+              productElement.href = `/products/${product.slug}`;
+              productElement.className =
+                "flex items-center p-4 hover:bg-gray-50 transition-colors duration-150";
+
+              let imageHtml = "";
+              if (product.imageUrl) {
+                imageHtml = `
+                  <div class="flex-shrink-0 w-14 h-14 bg-gray-100 rounded-md overflow-hidden shadow-sm">
+                    <img src="${product.imageUrl}" alt="${product.name}" class="w-full h-full object-cover">
+                  </div>
+                `;
+              } else {
+                imageHtml = `
+                  <div class="flex-shrink-0 w-14 h-14 bg-gray-100 rounded-md flex items-center justify-center">
+                    <svg class="w-6 h-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                `;
+              }
+
+              // Get category name from product or category object
+              const categoryName =
+                product.category?.name || product.categoryName || "";
+
+              productElement.innerHTML = `
+                ${imageHtml}
+                <div class="ml-4 flex-1">
+                  <div class="text-sm font-medium text-gray-900 line-clamp-1">${product.name}</div>
+                  <div class="text-xs text-gray-500 mt-0.5 flex items-center">
+                    ${
+                      categoryName
+                        ? `
+                      <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
+                        ${categoryName}
+                      </span>
+                    `
+                        : ""
+                    }
+                  </div>
+                  <div class="text-sm font-bold text-black mt-1.5">
+                    ${
+                      product.discountedPrice &&
+                      product.discountedPrice < product.price
+                        ? `<span class="text-red-600">৳${product.discountedPrice.toLocaleString()}</span> <span class="text-gray-400 line-through text-xs">৳${product.price.toLocaleString()}</span>`
+                        : `৳${product.price.toLocaleString()}`
+                    }
+                  </div>
+                </div>
+                <div class="ml-2 flex-shrink-0">
+                  <div class="rounded-full p-1 hover:bg-gray-200 transition-colors">
+                    <svg class="w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                </div>
+              `;
+
+              productsList.appendChild(productElement);
+            });
+
+            // Update "View All" link with search query
+            if (viewAllProductsLink) {
+              viewAllProductsLink.href = `/search?q=${encodeURIComponent(query)}`;
+            }
+          }
+
+          // Process and display categories
+          if (hasCategories) {
+            categoriesSection.classList.remove("hidden");
+            categoriesList.innerHTML = "";
+
+            data.categories.forEach((category) => {
+              const categoryElement = document.createElement("a");
+              categoryElement.href = `/categories/${category.slug}`;
+              categoryElement.className =
+                "flex items-center p-4 hover:bg-gray-50 transition-colors duration-150";
+
+              categoryElement.innerHTML = `
+                <div class="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-gray-800 to-black rounded-lg flex items-center justify-center shadow-sm">
+                  <svg class="w-5 h-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z" />
+                  </svg>
+                </div>
+                <div class="ml-3 flex-1">
+                  <div class="text-sm font-medium text-gray-900">${category.name}</div>
+                  ${category.description ? `<div class="text-xs text-gray-500 mt-0.5 line-clamp-1">${category.description}</div>` : ""}
+                </div>
+                <div class="ml-2 flex-shrink-0">
+                  <div class="rounded-full p-1 hover:bg-gray-200 transition-colors">
+                    <svg class="w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                </div>
+              `;
+
+              categoriesList.appendChild(categoryElement);
+            });
+          }
+
+          // Process and display pages
+          if (hasPages) {
+            pagesSection.classList.remove("hidden");
+            pagesList.innerHTML = "";
+
+            data.pages.forEach((page) => {
+              const pageElement = document.createElement("a");
+              pageElement.href = `/${page.slug}`;
+              pageElement.className =
+                "flex items-center p-4 hover:bg-gray-50 transition-colors duration-150";
+
+              pageElement.innerHTML = `
+                <div class="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg flex items-center justify-center shadow-sm">
+                  <svg class="w-5 h-5 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                </div>
+                <div class="ml-3 flex-1">
+                  <div class="text-sm font-medium text-gray-900">${page.title}</div>
+                  <div class="text-xs text-gray-500 mt-0.5 line-clamp-1">Page</div>
+                </div>
+                <div class="ml-2 flex-shrink-0">
+                  <div class="rounded-full p-1 hover:bg-gray-200 transition-colors">
+                    <svg class="w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                </div>
+              `;
+
+              pagesList.appendChild(pageElement);
+            });
+          }
+        }
+      } catch (error) {
+        console.error("Search error:", error);
+        loadingSection.classList.add("hidden");
+        errorSection.classList.remove("hidden");
+      }
+    }, 300);
+
+    // Add input event listener to search input
+    searchInput.addEventListener("input", (e) => {
+      const query = e.target.value;
+      performSearch(query);
+    });
+
+    // Handle form submission
+    searchForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const query = searchInput.value.trim();
+
+      if (query) {
+        window.location.href = `/search?q=${encodeURIComponent(query)}`;
+      }
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener("click", (e) => {
+      if (!searchForm.contains(e.target)) {
+        hideDropdown();
+      }
+    });
+
+    // Show dropdown when input is focused
+    searchInput.addEventListener("focus", () => {
+      if (searchInput.value.trim()) {
+        showDropdown();
+      }
+    });
+
+    // Handle keyboard navigation
+    searchInput.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        hideDropdown();
+        searchInput.blur();
+      }
+    });
+
+    // Add clear (X) button logic
+    const clearBtnId = mobileView ? "mobileClearSearchBtn" : "clearSearchBtn";
+    const clearBtn = document.getElementById(clearBtnId);
+
+    if (searchInput && clearBtn) {
+      // Show/hide clear button based on input value
+      function toggleClearBtn() {
+        if (searchInput.value.trim()) {
+          clearBtn.classList.remove("opacity-0", "pointer-events-none");
+          clearBtn.classList.add("opacity-100");
+          clearBtn.tabIndex = 0;
+        } else {
+          clearBtn.classList.add("opacity-0", "pointer-events-none");
+          clearBtn.classList.remove("opacity-100");
+          clearBtn.tabIndex = -1;
+        }
+      }
+      searchInput.addEventListener("input", toggleClearBtn);
+      searchInput.addEventListener("focus", toggleClearBtn);
+      searchInput.addEventListener("blur", toggleClearBtn);
+      // Initial state
+      toggleClearBtn();
+      // Clear input and hide dropdown on click
+      clearBtn.addEventListener("click", () => {
+        searchInput.value = "";
+        toggleClearBtn();
+        if (typeof hideDropdown === "function") hideDropdown();
+        searchInput.focus();
+      });
+    }
+  }
+</script>
+
+<style>
+  .search-results-dropdown {
+    box-shadow:
+      0 10px 15px -3px rgba(0, 0, 0, 0.1),
+      0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    max-height: min(600px, 80vh);
+  }
+
+  .products-list,
+  .categories-list,
+  .pages-list {
+    max-height: 320px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+  }
+
+  .products-list::-webkit-scrollbar,
+  .categories-list::-webkit-scrollbar,
+  .pages-list::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .products-list::-webkit-scrollbar-track,
+  .categories-list::-webkit-scrollbar-track,
+  .pages-list::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .products-list::-webkit-scrollbar-thumb,
+  .categories-list::-webkit-scrollbar-thumb,
+  .pages-list::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 20px;
+  }
+
+  .search-results-dropdown.hidden {
+    display: none;
+  }
+
+  /* Line clamp utility classes */
+  .line-clamp-1 {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

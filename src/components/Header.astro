@@ -1,30 +1,26 @@
 ---
 import CartFlyoutIcon from "../components/ui/CartFlyoutIcon";
+import SearchBar from "./SearchBar.astro";
 ---
 
 <header class="py-4 shadow-sm bg-white">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-    <a href="index.html">
+  <div
+    class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between"
+  >
+    <a href="/">
       <img src="/logo.heif" alt="Logo" class="w-32" />
     </a>
 
-    <div class="w-full max-w-xl relative flex">
-      <span class="absolute left-4 top-3 text-lg text-gray-400">
-        <i class="fa-solid fa-magnifying-glass"></i>
-      </span>
-      <input
-        type="text"
-        name="search"
-        id="search"
-        class="w-full border border-primary border-r-0 pl-12 py-3 pr-3 rounded-l-md focus:outline-none hidden md:flex"
-        placeholder="search"
-      />
-      <button
-        class="bg-primary border border-primary text-white px-8 rounded-r-md hover:bg-transparent hover:text-primary transition hidden md:flex justify-center items-center"
-        >Search</button
-      >
+    <!-- Desktop Search Bar -->
+    <div class="hidden md:block flex-grow max-w-xl mx-4">
+      <SearchBar />
     </div>
 
     <CartFlyoutIcon client:load />
+  </div>
+
+  <!-- Mobile Search -->
+  <div class="md:hidden py-2">
+    <SearchBar mobileView={true} containerClass="max-w-md mx-auto" />
   </div>
 </header>

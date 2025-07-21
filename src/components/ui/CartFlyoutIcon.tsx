@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useStore } from "@nanostores/react";
 import { cartStore, isCartOpen as isOpenCart } from "@/store/cart2";
+import { ShoppingBagIcon, ShoppingCart, ShoppingCartIcon } from "lucide-react";
 
 export default function CartFlyoutIcon() {
   const $isOpen = useStore(isOpenCart);
@@ -13,12 +14,11 @@ export default function CartFlyoutIcon() {
   return (
     <button
       onClick={() => isOpenCart.set(!$isOpen)}
-      id="cartButton"
-      className="flex justify-end items-center space-x-4"
+      className="relative flex items-center justify-center bg-white"
     >
-      <i className="fa-solid fa-bag-shopping text-xl"></i>
+      <ShoppingCart />
       {mounted && totalItems > 0 && (
-        <span id="cartCount" className="ml-4 text-sm font-medium">
+        <span className="absolute -top-2 left-4 w-5 h-5 rounded-full bg-primary flex items-center justify-center text-xs text-red-50">
           {totalItems}
         </span>
       )}

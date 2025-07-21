@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { addToCart, isCartOpen } from "@/store/cart2";
+import { Check, Minus, Plus, ShoppingCart } from "lucide-react";
 
 interface CardActionProps {
   product?: {
@@ -78,22 +79,41 @@ const CardAction = ({ product }: CardActionProps) => {
     }
   };
 
+  const handleBuyNow = () => {
+    const itemData = {
+      id: product.id,
+      slug: product.slug,
+      name: product.name,
+      price: product.price,
+      image: product.imageSrc,
+      quantity: inputNumber,
+      variantId: variant?.id,
+      size: product?.selectedSize,
+      color: product.selectedColor,
+    };
+    if (itemData) {
+      addToCart(itemData);
+      window.location.href = "/cart";
+    }
+  };
+
   return (
     <>
-      <div className="mt-4">
-        <h3 className="text-sm text-gray-800 uppercase mb-1">Quantity</h3>
+      <div className="my-4">
+        <h3 className="text-sm text-gray-800 uppercase mb-4">Quantity</h3>
         <label htmlFor="quantity" className="sr-only">
           Product quantity
         </label>
-        <div className="flex text-gray-600 divide-x divide-gray-300 w-max">
+
+        <div className="flex items-center">
           <button
             type="button"
             id="quantity-minus"
             onClick={decreaseQuantity}
-            className="h-8 w-8 border border-gray-300 text-xl flex items-center justify-center cursor-pointer select-none"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-l-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 active:bg-gray-100 shadow-sm transition-colors"
             aria-label="Decrease quantity"
           >
-            -
+            <Minus className="h-3.5 w-3.5" />
           </button>
           <input
             type="number"
@@ -103,33 +123,37 @@ const CardAction = ({ product }: CardActionProps) => {
             value={inputNumber}
             onChange={handleInputChange}
             aria-label="Product quantity"
-            className="h-8 w-10 text-center text-base flex items-center justify-center no-spinner"
+            className="h-8 w-14 border-y border-gray-300 text-center text-sm [-moz-appearance:_textfield] [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none"
           />
           <button
             type="button"
             id="quantity-plus"
             onClick={increaseQuantity}
-            className="h-8 w-8 text-xl flex items-center justify-center cursor-pointer select-none border border-gray-300"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-r-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 active:bg-gray-100 shadow-sm transition-colors"
             aria-label="Increase quantity"
           >
-            +
+            <Plus className="h-3.5 w-3.5" />
           </button>
         </div>
       </div>
 
       {/* cart action */}
-      <div className="mt-6 flex gap-3 border-b border-gray-200 pb-5 pt-5">
+      <div className=" flex gap-3 border-b border-gray-200 pb-5 ">
         <button
           onClick={handleAddToCart}
-          className="bg-primary border border-primary text-white px-8 py-2 font-medium rounded uppercase flex items-center gap-2 hover:bg-transparent hover:text-primary transition"
+          className="bg-primary border border-primary text-white text-xs px-8 py-2 font-medium rounded uppercase flex items-center gap-2 hover:bg-transparent hover:text-primary transition"
         >
-          <i className="fa-solid fa-bag-shopping"></i> Add to cart
+          <ShoppingCart /> Add to cart
         </button>
         <a
           href="#"
-          className="border border-gray-300 text-gray-600 px-8 py-2 font-medium rounded uppercase flex items-center gap-2 hover:text-primary transition"
+          className="border border-gray-300 text-gray-600 text-xs px-8 py-2 font-medium rounded uppercase flex items-center gap-2 hover:text-primary transition"
+          onClick={(e) => {
+            e.preventDefault();
+            handleBuyNow();
+          }}
         >
-          <i className="fa-solid fa-heart"></i> Wishlist
+          <Check /> Buy Now
         </a>
       </div>
     </>

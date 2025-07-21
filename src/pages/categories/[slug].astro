@@ -1,7 +1,317 @@
 ---
 import Layout from "@/layouts/Layout.astro";
-export const prerender = false;
+import { getCategoryBySlug } from "@/lib/apiRequest/categories";
+import { getProductsByCategorySlug } from "@/lib/apiRequest/dataFetching";
+import CategoryFilters from "@/components/CategoryFilters";
+import { Tags } from "lucide-react";
+import { getFilterableAttributes } from "@/lib/apiRequest/attributes";
+
+const { slug } = Astro.params;
+if (!slug) return Astro.redirect("/404");
+
+const searchParams = Astro.url.searchParams;
+const page = parseInt(searchParams.get("page") || "1");
+const sort = searchParams.get("sort") || "newest";
+
+const category = await getCategoryBySlug(slug);
+if (!category) return Astro.redirect("/404");
+
+const attributes =
+  (await getFilterableAttributes({ categorySlug: slug })) || [];
+
+const minPrice = searchParams.get("minPrice") || "";
+const maxPrice = searchParams.get("maxPrice") || "";
+const hasDiscount = searchParams.get("hasDiscount") === "true";
+const freeDelivery = searchParams.get("freeDelivery") === "true";
+
+const productsResponse = await getProductsByCategorySlug(slug, {
+  page,
+  limit: 20,
+  sort,
+  minPrice: minPrice ? Number(minPrice) : undefined,
+  maxPrice: maxPrice ? Number(maxPrice) : undefined,
+  hasDiscount: searchParams.has("hasDiscount") ? hasDiscount : undefined,
+  freeDelivery: searchParams.has("freeDelivery") ? freeDelivery : undefined,
+});
+const products = productsResponse?.products || [];
+const pagination = productsResponse?.pagination || {
+  total: 0,
+  totalPages: 0,
+  page: 1,
+};
+const { total, totalPages } = pagination;
+
+const pageTitle = category.metaTitle || category.name;
+const pageDescription =
+  category.metaDescription ||
+  `Browse products in the ${category.name} category.`;
+
+function getPaginationUrl(pageNum: number) {
+  const url = new URL(Astro.url);
+  url.searchParams.set("page", pageNum.toString());
+  return url.toString();
+}
+
+function generatePaginationLinks(
+  currentPage: number,
+  totalPages: number,
+): (number | string)[] {
+  if (totalPages <= 7)
+    return Array.from({ length: totalPages }, (_, i) => i + 1);
+  if (currentPage <= 4) return [1, 2, 3, 4, 5, "...", totalPages];
+  if (currentPage >= totalPages - 3)
+    return [
+      1,
+      "...",
+      totalPages - 4,
+      totalPages - 3,
+      totalPages - 2,
+      totalPages - 1,
+      totalPages,
+    ];
+  return [
+    1,
+    "...",
+    currentPage - 1,
+    currentPage,
+    currentPage + 1,
+    "...",
+    totalPages,
+  ];
+}
 ---
-<Layout title="Prime Ware" description="This is product deatils pages">
-   <div>categories</div>
-  </Layout>
+
+<Layout title={pageTitle} description={pageDescription}>
+  <main class="min-h-screen bg-white pb-12">
+    <div
+      class="bg-gradient-to-b from-gray-50 to-white border-b border-gray-100"
+    >
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        <nav class="text-sm mb-4">
+          <ol class="flex items-center space-x-2">
+            <li class="whitespace-nowrap">
+              <a href="/" class="text-gray-500 hover:text-gray-900">Home</a>
+            </li>
+            <li class="text-gray-300">/</li>
+            <li class="whitespace-nowrap">
+              <span class="text-gray-900 font-medium truncate"
+                >{category.name}</span
+              >
+            </li>
+          </ol>
+        </nav>
+        <div class="flex justify-between items-start gap-4 flex-wrap">
+          <div class="space-y-2 max-w-xl">
+            <h1 class="text-2xl sm:text-4xl font-bold text-gray-900">
+              {category.name}
+            </h1>
+            {
+              category.description && (
+                <p class="text-gray-500 text-md">{category.description}</p>
+              )
+            }
+          </div>
+          <div
+            class="flex items-center gap-2 px-3 py-1.5 rounded-md bg-gray-50 border shadow-sm"
+          >
+            <Tags size={18} color="#D9D9DB" />
+            <span class="font-medium text-gray-900 text-xs"
+              >{total} products</span
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+      <div class="relative flex flex-col lg:flex-row gap-8">
+        <div class="lg:w-1/4 hidden lg:block">
+          <CategoryFilters
+            client:load
+            minPrice={minPrice}
+            maxPrice={maxPrice}
+            sort={sort}
+            attributes={attributes}
+            currentFilters={{
+              minPrice,
+              maxPrice,
+              sort,
+              ...Object.fromEntries(searchParams.entries()),
+            }}
+            categorySlug={category.slug}
+          />
+        </div>
+        <div class="w-full">
+          {
+            products.length === 0 ? (
+              <div class="flex flex-col items-center justify-center py-12 px-4 bg-gray-50 rounded-lg text-center">
+                <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-4 shadow-sm">
+                  <svg
+                    class="w-8 h-8 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-1">
+                  No products found
+                </h3>
+                <p class="text-gray-500 mb-6">
+                  No products matched your current filters.
+                </p>
+                <a
+                  href={`/categories/${category.slug}`}
+                  class="text-sm font-medium text-black hover:underline inline-flex items-center gap-1.5"
+                >
+                  <svg
+                    class="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M15 19l-7-7 7-7" />
+                  </svg>
+                  Reset All Filters
+                </a>
+              </div>
+            ) : (
+              <div class="space-y-8">
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+                  {products.map((product) => (
+                    <a href={`/products/${product.slug}`} class="group block">
+                      <div class="rounded-lg overflow-hidden bg-white border border-gray-200 hover:shadow-md transition-all duration-300 h-full flex flex-col">
+                        <div class="aspect-square relative overflow-hidden bg-gray-50">
+                          <img
+                            src={
+                              product.imageUrl ||
+                              "/images/products/product1.jpg"
+                            }
+                            alt={product.name}
+                            width="300"
+                            height="300"
+                            class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                          />
+                          <div class="absolute top-2 left-2 flex flex-col gap-1.5">
+                            {(product.discountPercentage ?? 0) > 0 && (
+                              <span class="bg-red-100 text-red-700 text-xs font-medium px-2 py-0.5 rounded-full border border-red-200">
+                                {product.discountPercentage}% OFF
+                              </span>
+                            )}
+                            {product.freeDelivery && (
+                              <span class="bg-green-50 text-green-700 text-xs font-medium px-2 py-0.5 rounded-full border border-green-200 flex items-center gap-1">
+                                <img
+                                  src="/images/icons/delivery-van.svg"
+                                  alt="Free Delivery"
+                                  class="w-3 h-3 inline"
+                                />
+                                Free Delivery
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <div class="p-3 sm:p-4 flex flex-col flex-grow">
+                          <h3 class="font-medium text-gray-900 line-clamp-1 mb-1 group-hover:text-gray-600 transition-colors text-sm sm:text-base">
+                            {product.name}
+                          </h3>
+                          <div class="flex items-baseline gap-2 mb-1">
+                            <span class="text-lg font-bold text-gray-900">
+                              ৳{product.discountedPrice}
+                            </span>
+                            {product.discountedPrice !== product.price && (
+                              <span class="text-xs text-gray-500 line-through">
+                                ৳{product.price}
+                              </span>
+                            )}
+                          </div>
+                          <div class="mt-auto pt-3">
+                            <div class="w-full bg-black hover:bg-gray-800 text-white rounded-lg py-1.5 px-3 text-xs font-medium text-center transition-colors group-hover:shadow-sm">
+                              View Details
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </a>
+                  ))}
+                </div>
+                {totalPages > 1 && (
+                  <nav
+                    class="flex items-center justify-center mt-10 space-x-2"
+                    aria-label="Pagination"
+                  >
+                    <a
+                      href={page > 1 ? getPaginationUrl(page - 1) : "#"}
+                      class={[
+                        "inline-flex h-8 w-8 items-center justify-center rounded-lg border text-sm",
+                        page > 1
+                          ? "border-gray-300 hover:bg-gray-50"
+                          : "border-gray-100 text-gray-300 cursor-not-allowed",
+                      ].join(" ")}
+                      aria-disabled={page <= 1}
+                    >
+                      <span class="sr-only">Previous</span>
+                      <svg
+                        class="h-4 w-4"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="M15 19l-7-7 7-7" />
+                      </svg>
+                    </a>
+                    {generatePaginationLinks(page, totalPages).map((pageNum) =>
+                      typeof pageNum === "number" ? (
+                        <a
+                          href={getPaginationUrl(pageNum)}
+                          class={[
+                            "inline-flex h-8 min-w-[2rem] items-center justify-center rounded-lg border text-sm",
+                            page === pageNum
+                              ? "border-gray-900 bg-gray-900 text-white"
+                              : "border-gray-300 hover:bg-gray-50",
+                          ].join(" ")}
+                          aria-current={page === pageNum ? "page" : undefined}
+                        >
+                          {pageNum}
+                        </a>
+                      ) : (
+                        <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-gray-100 text-sm">
+                          ...
+                        </span>
+                      ),
+                    )}
+                    <a
+                      href={
+                        page < totalPages ? getPaginationUrl(page + 1) : "#"
+                      }
+                      class={[
+                        "inline-flex h-8 w-8 items-center justify-center rounded-lg border text-sm",
+                        page < totalPages
+                          ? "border-gray-300 hover:bg-gray-50"
+                          : "border-gray-100 text-gray-300 cursor-not-allowed",
+                      ].join(" ")}
+                      aria-disabled={page >= totalPages}
+                    >
+                      <span class="sr-only">Next</span>
+                      <svg
+                        class="h-4 w-4"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="M9 5l7 7-7 7" />
+                      </svg>
+                    </a>
+                  </nav>
+                )}
+              </div>
+            )
+          }
+        </div>
+      </div>
+    </div>
+  </main>
+</Layout>

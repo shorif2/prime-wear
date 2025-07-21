@@ -7,17 +7,15 @@ import Newarrival from "../components/HomeComponents/Newarrival.astro";
 import Product from "../components/HomeComponents/Product.astro";
 import Layout from "../layouts/Layout.astro";
 import "../styles/global.css";
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import { getHeroSliders } from "../lib/apiRequest/settings";
+const heroSliderData = await getHeroSliders();
 ---
 
 <Layout
   title="Prime Wear - Collection of Primium Cloth"
-  ,
   description="This is a clothing brand ecommerce store"
 >
-  <Banner />
+  <Banner heroSliderData={heroSliderData} />
   <Features />
   <Categories />
   <Newarrival />

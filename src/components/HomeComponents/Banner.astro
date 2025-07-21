@@ -1,29 +1,217 @@
-<div
-  id="banner"
-  class="bg-cover bg-no-repeat bg-center py-36"
-  style="background-image: url('/images/banner-bg.jpg');"
->
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <h1 class="text-6xl text-gray-800 font-medium mb-4 capitalize">
-      best collection for <br /> home decoration
-    </h1>
-    <p>
-      Lorem, ipsum dolor sit amet consectetur adipisicing elit. Aperiam <br />
-      accusantium perspiciatis, sapiente magni eos dolorum ex quos dolores odio
-    </p>
-    <div class="mt-12">
-      <a
-        href="#"
-        class="bg-primary border border-primary text-white px-8 py-3 font-medium
-                    rounded-md hover:bg-transparent hover:text-primary"
-        >Shop Now</a
-      >
+---
+const { heroSliderData } = Astro.props;
+/** @type {{ url: string; title?: string; link: string; id?: string }[]} */
+const slides = heroSliderData?.images || [];
+---
+
+<div id="banner" class="bg-cover bg-no-repeat bg-center bg-gray-100">
+  <div class="slider-container max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="slider-wrapper">
+      <div class="slider-track" id="sliderTrack">
+        {
+          slides.map((slide: any, idx: number) => (
+            <div class="slide" {...{ "data-idx": idx }}>
+              <img src={slide.url} alt={slide.title || `Slide ${idx + 1}`} />
+              <div class="slide-content">
+                {slide.title && <div class="slide-title">{slide.title}</div>}
+                {slide.link && (
+                  <a href={slide.link} class="slide-link">
+                    {slide.link}
+                  </a>
+                )}
+              </div>
+            </div>
+          ))
+        }
+      </div>
+      <button class="nav-button prev-btn" onclick="prevSlide()">❮</button>
+      <button class="nav-button next-btn" onclick="nextSlide()">❯</button>
     </div>
+    <div class="dots-container" id="dotsContainer"></div>
   </div>
 </div>
-
+<script src="/slider.js" is:inline></script>
 <style>
-  /* #banner {
-    background-image: url('/images/banner-bg.jpg');
-} */
+  .slider-container {
+    /* position: relative; */
+    /* background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2); */
+  }
+
+  .slider-wrapper {
+    position: relative;
+    overflow: hidden;
+    border-radius: 15px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  }
+
+  .slider-track {
+    display: flex;
+    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    will-change: transform;
+  }
+
+  .slide {
+    min-width: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .slide img {
+    width: 100%;
+    height: 500px;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.6s ease;
+  }
+
+  .slide:hover img {
+    transform: scale(1.05);
+  }
+
+  .slide-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+    color: white;
+    padding: 40px 30px 30px;
+    transform: translateY(100%);
+    transition: transform 0.4s ease;
+  }
+
+  .slide:hover .slide-content {
+    transform: translateY(0);
+  }
+
+  .slide-title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  }
+
+  .slide-description {
+    font-size: 1rem;
+    opacity: 0.9;
+    margin-bottom: 15px;
+    line-height: 1.4;
+  }
+
+  .slide-price {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #4ade80;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  }
+
+  .nav-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: #333;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    z-index: 10;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  }
+
+  .nav-button:hover {
+    background: rgba(255, 255, 255, 1);
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  }
+
+  .prev-btn {
+    left: 20px;
+  }
+
+  .next-btn {
+    right: 20px;
+  }
+
+  .dots-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 25px;
+    gap: 12px;
+  }
+
+  .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.4);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+  }
+
+  .dot.active {
+    background: white;
+    transform: scale(1.2);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
+  }
+
+  .dot:hover {
+    background: rgba(255, 255, 255, 0.8);
+    transform: scale(1.1);
+  }
+
+  .slider-header {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .slider-header h2 {
+    color: white;
+    font-size: 2.2rem;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  .slider-header p {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1.1rem;
+  }
+
+  @media (max-width: 768px) {
+    .slider-container {
+      padding: 20px;
+    }
+
+    .slide img {
+      height: 300px;
+    }
+
+    .nav-button {
+      width: 40px;
+      height: 40px;
+      font-size: 14px;
+    }
+
+    .slide-title {
+      font-size: 1.4rem;
+    }
+
+    .slider-header h2 {
+      font-size: 1.8rem;
+    }
+  }
 </style>
